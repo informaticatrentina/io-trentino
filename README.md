@@ -1,6 +1,6 @@
 ![Logo di OPV](Logo-OPV.png)
 
-# OPV - Sistema di Valutazione Dirigenti 
+# io-trentino - Proxy per la comunicazione con IO Italia e altre piattaforme
 
 IOTrentino è un applicativo web che consente di facilitare la comunicazione con IO Italia
 
