@@ -58,23 +58,26 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
     public MessageDTO receiveSendMessage(MessageDTO messageDTO) throws IotException {
 
 
-        log.info(" >> Original received message: " + messageDTO.getIdObj());
+        log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
 
-        defaultApi.getApiClient().setApiKey(messageDTO.getEnteDTO().getTokenIoItalia());
-        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
-        if (!limitedProfile.isSenderAllowed()){
-            messageDTO.setErroreImprevisto("Permesso negato");
-            return messageDTO;
-        }
-        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
-        messageDTO.setExternID(inlineResponse201.getId());
-
-        MessagePO messagePOCaricato = messageRepository.getOne(messageDTO.getIdObj());
-        messagePOCaricato.setExternID(messageDTO.getExternID());
-
-        MessagePO messagePO = messageMapper.toEntity(messageDTO);
-        messagePO = messageRepository.saveAndFlush(messagePO);
-        messageDTO = messageMapper.toDto(messagePO);
+//        defaultApi.getApiClient().setApiKey(messageDTO.getEnteDTO().getTokenIoItalia());
+//        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
+//        if (!limitedProfile.isSenderAllowed()){
+//            messageDTO.setErroreImprevisto("Permesso negato");
+//            return messageDTO;
+//        }
+//        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
+//        messageDTO.setExternID(inlineResponse201.getId());
+//
+//        Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
+//
+//        if (messagePOCaricato.isPresent()){
+//            MessagePO messagePO = messagePOCaricato.get();
+//            messagePO.setExternID(messageDTO.getExternID());
+//            messagePO = messageRepository.saveAndFlush(messagePO);
+//            messageDTO = messageMapper.toDto(messagePO);
+//
+//        }
 
         return messageDTO;
     }

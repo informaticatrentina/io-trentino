@@ -1,0 +1,37 @@
+{
+  "codiceFiscale": "string",
+  "dataInserimento": "2019-10-02T12:37:49.134Z",
+  "dataModifica": "2019-10-02T12:37:49.134Z",
+  "email": "string",
+  "erroreImprevisto": "string",
+  "externID": "string",
+  "idObj": 0,
+  "notificationDTOS": [
+    {
+      "dataInserimento": "2019-10-02T12:37:49.134Z",
+      "dataModifica": "2019-10-02T12:37:49.134Z",
+      "eMailNotification": "string",
+      "erroreImprevisto": "string",
+      "idObj": 0,
+      "lastChance": "2019-10-02T12:37:49.134Z",
+      "note": "string",
+      "status": "string",
+      "version": 0,
+      "webhookNotification": "string"
+    }
+  ],
+  "oggetto": "string",
+  "scadenza": "2019-10-02T12:37:49.134Z",
+  "testo": "string",
+  "timeToLive": 0,
+  "tipoMessage": "IO_ITALIA",
+  "version": 0
+}
+
+{
+  "oggetto": "Ciao $i qui pare funzionare tutto",
+  "scadenza": "2019-09-30T08:02:19.482Z",
+  "testo": "Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto ",
+  "timeToLive": 3600,
+  "tipoMessage": "EMAIL"
+}
