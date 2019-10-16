@@ -22,7 +22,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
- * REST controller for managing Area.
+ * REST controller for managing Ente.
  */
 @RestController
 @SwaggerDefinition()
@@ -47,7 +47,7 @@ public class EnteResource extends AbstractResource {
     }
 
     /**
-     * POST  /ente : Create una nuova atto.
+     * POST  /ente : Create un nuovo Ente.
      *
      * @param enteDTO the enteDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new attoDTO, or with status 400 (Bad Request) if the area has already an ID
@@ -91,7 +91,7 @@ public class EnteResource extends AbstractResource {
      * @param idObj the id of the enteDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the areaDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/area/{idObj}")
+    @GetMapping("/ente/{idObj}")
     @ApiOperation("Ritorna un ente dato un determinato idObj")
     @LogExecutionTime
     public ResponseEntity<EnteDTO> getEnte(@PathVariable Long idObj) {
