@@ -1,0 +1,3 @@
+<jboss-web>
+ <context-root>/iot</context-root>
+</jboss-web>

@@ -1,0 +1,61 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overridden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+#
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# ===================================================================
+
+spring:
+  data:
+    rest:
+      base-path: /iot
+  application:
+    name: iot
+  jmx:
+    default-domain: iot
+  profiles:
+    active: #activeProfile#
+
+  jackson:
+    serialization.write_dates_as_timestamps: false
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  messages:
+    basename: i18n/messages
+
+  mvc:
+    favicon:
+      enabled: false
+
+  thymeleaf:
+    mode: XHTML
+  enabled: true
+
+
+
+logging:
+  level:
+    ROOT: ERROR
+    org.springframework.security: ERROR
+    it.tndigit: INFO
+    it.tndigit.not.security: INFO
+application:
+  cron:
+    consuntivo:
+      change-state: ""
+
+server:
+  servlet:
+    context-path: /iot
+
