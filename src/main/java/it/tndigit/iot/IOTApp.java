@@ -32,7 +32,7 @@ import javax.jms.ConnectionFactory;
 @EnableJpaRepositories
 @EnableOAuth2Client
 @EnableJms
-//@EnableScheduling
+@EnableScheduling
 @ComponentScan({"it.tndigit.iot", "it.tndigit.ioitalia", "it.tndigit.auth"})
 public class IOTApp{
 

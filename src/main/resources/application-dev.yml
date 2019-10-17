@@ -48,8 +48,6 @@ spring:
 #      receive-timeout: 1000
 #      time-to-live: 36000
 
-
-
   activemq:
     broker-url: tcp://172.26.7.70:61616
     user: admin
@@ -147,6 +145,9 @@ server:
 #  ioitalia:
 #    tocken-standard: 6141c7757be64538bef931860cb2e5e2
 
+iot:
+  encrypted:
+    properties: ENC(uTSqb9grs1+slfdjksladfjsadfh+8)
 
 
 

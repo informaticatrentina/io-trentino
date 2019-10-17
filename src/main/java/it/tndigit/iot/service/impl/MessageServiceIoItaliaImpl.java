@@ -123,7 +123,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             Optional<NotificationPO> notificationPOOptional =
                     notificationRepository.findByMessagePO_IdObjAndEmailNotificationAndWebhookNotificationAndStatus(
                             messageDTO.getIdObj(),
-                            notificationDTOOptional.get().geteMailNotification(),
+                            notificationDTOOptional.get().getEmailNotification(),
                             notificationDTOOptional.get().getWebhookNotification(),
                             notificationDTOOptional.get().getStatus()
                     );
@@ -198,7 +198,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
         NotificationDTO notificationDTO = applicationContext.getBean(NotificationDTO.class);
         notificationDTO.setMessageDTO(messageDTO);
         if (messageResponseWithContent.getNotification()!=null){
-            notificationDTO.seteMailNotification(messageResponseWithContent.getNotification().getEmail());
+            notificationDTO.setEmailNotification(messageResponseWithContent.getNotification().getEmail());
         }
         notificationDTO.setWebhookNotification(messageResponseWithContent.getNotification().getWebhook());
         notificationDTO.setStatus(messageResponseWithContent.getStatus());

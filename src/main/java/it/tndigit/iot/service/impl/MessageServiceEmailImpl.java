@@ -74,7 +74,7 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
 
         NotificationDTO notificationDTO = applicationContext.getBean(NotificationDTO.class);
         notificationDTO.setMessageDTO(messageDTO);
-        notificationDTO.seteMailNotification("SENT");
+        notificationDTO.setEmailNotification("SENT");
         notificationDTO.setStatus("OK");
         notificationDTO.setLastChance(LocalDateTime.now());
 
