@@ -18,6 +18,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 import javax.jms.Message;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -57,28 +58,26 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
     @JmsListener(destination = "IO_ITALIA_QUEUE", containerFactory = "myFactory")
     public void receiveSendMessage(MessageDTO messageDTO) throws IotException {
 
-
-
         log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
 
-//        defaultApi.getApiClient().setApiKey(messageDTO.getEnteDTO().getTokenIoItalia());
-//        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
-//        if (!limitedProfile.isSenderAllowed()){
-//            messageDTO.setErroreImprevisto("Permesso negato");
-//            return messageDTO;
-//        }
-//        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
-//        messageDTO.setExternID(inlineResponse201.getId());
-//
-//        Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
-//
-//        if (messagePOCaricato.isPresent()){
-//            MessagePO messagePO = messagePOCaricato.get();
-//            messagePO.setExternID(messageDTO.getExternID());
-//            messagePO = messageRepository.saveAndFlush(messagePO);
-//            messageDTO = messageMapper.toDto(messagePO);
-//
-//        }
+        defaultApi.getApiClient().setApiKey(messageDTO.getEnteDTO().getTokenIoItalia());
+        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
+        if (!limitedProfile.isSenderAllowed()){
+            messageDTO.setErroreImprevisto("Permesso negato");
+            throw new IotException("Impossibile mandare il messaggio, utente NON abilitato");
+        }
+        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
+        messageDTO.setExternID(inlineResponse201.getId());
+
+        Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
+
+        if (messagePOCaricato.isPresent()){
+            MessagePO messagePO = messagePOCaricato.get();
+            messagePO.setExternID(messageDTO.getExternID());
+            messagePO = messageRepository.saveAndFlush(messagePO);
+            messageDTO = messageMapper.toDto(messagePO);
+
+        }
 
 
     }

@@ -47,7 +47,7 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
     public void receiveSendMessage(MessageDTO messageDTO) throws IotException{
 
 
-        log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
+        log.info(" RICEVUTO MESSAGGIO EMAIL CON ID " + messageDTO.getIdObj());
 
         try{
             SimpleMailMessage mailMessage = new SimpleMailMessage();
