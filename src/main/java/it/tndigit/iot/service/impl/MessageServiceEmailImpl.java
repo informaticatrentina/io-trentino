@@ -43,8 +43,8 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
     }
 
     @Override
-    //@JmsListener(destination = "EMAIL_QUEUE", containerFactory = "myFactory")
-    public MessageDTO receiveSendMessage(MessageDTO messageDTO) throws IotException{
+    @JmsListener(destination = "EMAIL_QUEUE", containerFactory = "myFactory")
+    public void receiveSendMessage(MessageDTO messageDTO) throws IotException{
 
 
         log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
@@ -58,10 +58,8 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
             javaMailSender.send(mailMessage);
             this.createNotification(messageDTO);
             this.saveNotification(messageDTO);
-            return messageDTO;
         }catch (Exception ex){
             log.error(ex.getMessage());
-            return null;
 
         }
 

@@ -17,13 +17,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.core.JmsMessagingTemplate;
+import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 
 @Service
-//@Transactional
+@Transactional
 public class MessageServiceImpl implements MessageService {
     private final Logger log = LoggerFactory.getLogger(MessageServiceImpl.class);
 
@@ -45,7 +47,7 @@ public class MessageServiceImpl implements MessageService {
     private EnteMapper enteMapper;
 
     @Autowired
-    private JmsMessagingTemplate jmsMessagingTemplate;
+    private JmsTemplate jmsMessagingTemplate;
 
 
     protected Optional<EnteDTO> getEnte(){

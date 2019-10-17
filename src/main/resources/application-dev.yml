@@ -51,14 +51,11 @@ spring:
 
 
   activemq:
-    broker-url: tcp://172.26.1.19:61616
+    broker-url: tcp://172.26.7.70:61616
     user: admin
     password: admin
     packages:
       trust-all: true
-    in-memory: false
-    pool:
-      enabled: false
 
   jms:
     pub-sub-domain: false
@@ -66,9 +63,9 @@ spring:
       #trusted: org.springframework.remoting.support,java.lang,it.tndigit.iot
   #jms:
     #pub-sub-domain: true
-    listener:
-      concurrency: 1
-      max-concurrency: 1
+    #listener:
+    #  concurrency: 1
+     # max-concurrency: 1
 
 
   jpa:

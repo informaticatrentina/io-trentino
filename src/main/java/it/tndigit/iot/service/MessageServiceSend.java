@@ -19,6 +19,6 @@ public interface MessageServiceSend {
 
     MessageDTO sendMessage(MessageDTO messageDTO) throws IotException;
     MessageDTO getMessage(MessageDTO messageDTO) throws IotException;
-    MessageDTO receiveSendMessage(MessageDTO messageDTO) throws IotException;;
+    void receiveSendMessage(MessageDTO messageDTO) throws IotException;;
 
 }

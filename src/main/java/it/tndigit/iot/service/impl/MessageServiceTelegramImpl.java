@@ -27,7 +27,6 @@ public class MessageServiceTelegramImpl implements MessageServiceSend {
     }
 
     @Override
-    public MessageDTO receiveSendMessage(MessageDTO messageDTO) throws IotException {
-        return null;
+    public void receiveSendMessage(MessageDTO messageDTO) throws IotException {
     }
 }

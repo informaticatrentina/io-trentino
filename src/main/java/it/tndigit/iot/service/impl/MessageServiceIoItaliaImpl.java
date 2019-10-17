@@ -55,7 +55,8 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 
 
     @JmsListener(destination = "IO_ITALIA_QUEUE", containerFactory = "myFactory")
-    public MessageDTO receiveSendMessage(MessageDTO messageDTO) throws IotException {
+    public void receiveSendMessage(MessageDTO messageDTO) throws IotException {
+
 
 
         log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
@@ -79,7 +80,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 //
 //        }
 
-        return messageDTO;
+
     }
 
 
