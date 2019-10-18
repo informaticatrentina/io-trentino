@@ -1,6 +1,6 @@
 package it.tndigit.iot.repository;
 
-import it.tndigit.iot.domain.EntePO;
+import it.tndigit.iot.domain.ServizioPO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,6 +8,6 @@ import java.util.Optional;
 
 
 @Repository
-public interface EnteRepository extends JpaRepository<EntePO, Long> {
-    Optional<EntePO> findByEmailPec(String eMailPec);
+public interface ServizioRepository extends JpaRepository<ServizioPO, Long> {
+    Optional<ServizioPO> findByEmailPec(String eMailPec);
 }

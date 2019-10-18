@@ -7,13 +7,17 @@ import java.io.Serializable;
 
 @Component
 @Scope("prototype")
-public class EnteDTO extends CommonDTO implements Serializable {
+public class ServizioDTO extends CommonDTO implements Serializable {
 
     private static final long serialVersionUID = 257211671246793156L;
 
     private String nomeEnte;
 
     private String nomeDipartimento;
+
+    private String nomeServizio;
+
+    private String codiceServizioIoItalia;
 
     private String codiceFiscale;
 
@@ -69,5 +73,21 @@ public class EnteDTO extends CommonDTO implements Serializable {
 
     public void setTokenIoItalia(String tokenIoItalia) {
         this.tokenIoItalia = tokenIoItalia;
+    }
+
+    public String getNomeServizio() {
+        return nomeServizio;
+    }
+
+    public void setNomeServizio(String nomeServizio) {
+        this.nomeServizio = nomeServizio;
+    }
+
+    public String getCodiceServizioIoItalia() {
+        return codiceServizioIoItalia;
+    }
+
+    public void setCodiceServizioIoItalia(String codiceServizioIoItalia) {
+        this.codiceServizioIoItalia = codiceServizioIoItalia;
     }
 }

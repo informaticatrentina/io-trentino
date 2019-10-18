@@ -9,18 +9,20 @@ import org.mapstruct.Mapping;
  * Mapper for the entity DeliberaPO and its DTO DeliberaDTO.
  */
 
-@Mapper(componentModel = "spring", uses = {NotificationMapper.class, EnteMapper.class})
+@Mapper(componentModel = "spring", uses = {NotificationMapper.class, ServizioMapper.class, PaymentMapper.class})
 public interface MessageMapper extends EntityMapper<MessageDTO, MessagePO> {
 
 
     @Mapping(source = "idObj", target = "idObj")
     @Mapping(source = "notificationPOS", target = "notificationDTOS")
-    @Mapping(source = "entePO", target = "enteDTO")
+    @Mapping(source = "servizioPO", target = "servizioDTO")
+    @Mapping(source = "paymentPO", target = "paymentDTO")
     MessageDTO toDto(MessagePO messagePO);
 
     @Mapping(source = "idObj", target = "idObj")
     @Mapping(source = "notificationDTOS", target = "notificationPOS")
-    @Mapping(source = "enteDTO", target = "entePO")
+    @Mapping(source = "servizioDTO", target = "servizioPO")
+    @Mapping(source = "paymentDTO", target = "paymentPO")
     MessagePO toEntity(MessageDTO messageDTO);
 
 

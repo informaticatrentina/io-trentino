@@ -1,12 +1,12 @@
 package it.tndigit.iot.web.rest;
 
-import it.tndigit.iot.domain.EntePO;
-import it.tndigit.iot.generate.EnteGenerate;
-import it.tndigit.iot.repository.EnteRepository;
-import it.tndigit.iot.service.EnteService;
-import it.tndigit.iot.service.dto.EnteDTO;
-import it.tndigit.iot.service.mapper.EnteMapper;
-import it.tndigit.iot.web.validator.EnteValidator;
+import it.tndigit.iot.domain.ServizioPO;
+import it.tndigit.iot.generate.ServizioGenerate;
+import it.tndigit.iot.repository.ServizioRepository;
+import it.tndigit.iot.service.ServizioService;
+import it.tndigit.iot.service.dto.ServizioDTO;
+import it.tndigit.iot.service.mapper.ServizioMapper;
+import it.tndigit.iot.web.validator.ServizioValidator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,33 +25,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class EnteResourceTest  extends AbstractResourceTest{
+public class ServizioResourceTest extends AbstractResourceTest{
 
 
     @Autowired
-    private EnteService enteService;
+    private ServizioService servizioService;
 
     @Autowired
-    private EnteValidator enteValidator;
+    private ServizioValidator servizioValidator;
 
     @Autowired
-    private EnteRepository enteRepository;
+    private ServizioRepository servizioRepository;
 
     @Autowired
-    private EnteMapper enteMapper;
+    private ServizioMapper enteMapper;
 
     @Autowired
-    private EnteGenerate enteGenerate;
+    private ServizioGenerate servizioGenerate;
 
     private MockMvc restEnteMockMvc;
 
-    private EntePO entePO;
+    private ServizioPO entePO;
 
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final EnteResource areaResource = new EnteResource(enteService, enteValidator);
+        final ServizioResource areaResource = new ServizioResource(servizioService, servizioValidator);
         this.restEnteMockMvc = MockMvcBuilders.standaloneSetup(areaResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setControllerAdvice(exceptionTranslator)
@@ -62,26 +62,26 @@ public class EnteResourceTest  extends AbstractResourceTest{
 
     @Before
     public void initTest() {
-        entePO =  enteGenerate.getObjectPO(new EntePO());
+        entePO =  servizioGenerate.getObjectPO(new ServizioPO());
 
     }
 
     @Test
     public void createEnte()  throws  Exception{
 
-        int databaseSizeBeforeCreate = enteRepository.findAll().size();
+        int databaseSizeBeforeCreate = servizioRepository.findAll().size();
 
         // Create the Area
-        EnteDTO enteDTO = enteMapper.toDto(entePO);
+        ServizioDTO enteDTO = enteMapper.toDto(entePO);
         restEnteMockMvc.perform(post("/v1/api/ente")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(enteDTO)))
                 .andExpect(status().isCreated());
 
         // Validate the Area in the database
-        List<EntePO> enteList = enteRepository.findAll();
+        List<ServizioPO> enteList = servizioRepository.findAll();
         assertThat(enteList).hasSize(databaseSizeBeforeCreate + 1);
-        EntePO testEnte = enteList.get(enteList.size() - 1);
+        ServizioPO testEnte = enteList.get(enteList.size() - 1);
         assertThat(testEnte.getCodiceFiscale()).isEqualTo(entePO.getCodiceFiscale());
         assertThat(testEnte.getEmail()).isEqualTo(entePO.getEmail());
         assertThat(testEnte.getEmailPec()).isEqualTo(entePO.getEmailPec());

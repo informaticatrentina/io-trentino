@@ -1,25 +1,25 @@
 package it.tndigit.iot.generate;
 
-import it.tndigit.iot.domain.EntePO;
-import it.tndigit.iot.service.dto.EnteDTO;
+import it.tndigit.iot.domain.ServizioPO;
+import it.tndigit.iot.service.dto.ServizioDTO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 
 
 @Service
-public class EnteGenerate extends AbstractGenerate<EntePO, EnteDTO> {
+public class ServizioGenerate extends AbstractGenerate<ServizioPO, ServizioDTO> {
 
     @Override
-    public EntePO getObjectPO() {
-        EntePO po = applicationContext.getBean(EntePO.class);
+    public ServizioPO getObjectPO() {
+        ServizioPO po = applicationContext.getBean(ServizioPO.class);
         return getObjectPO(po);
     }
 
     @Override
-    public EntePO getObjectPO(EntePO po) {
+    public ServizioPO getObjectPO(ServizioPO po) {
 
         if (po == null){
-            po = applicationContext.getBean(EntePO.class);
+            po = applicationContext.getBean(ServizioPO.class);
         }
 
         po.setCodiceFiscale(RandomStringUtils.randomAlphabetic(16));
@@ -34,7 +34,7 @@ public class EnteGenerate extends AbstractGenerate<EntePO, EnteDTO> {
     }
 
     @Override
-    public EnteDTO getObjectDTO(EnteDTO dto) {
+    public ServizioDTO getObjectDTO(ServizioDTO dto) {
         return null;
     }
 

@@ -16,7 +16,6 @@ public interface MessageService {
      * @throws IotException
      */
 
-    MessageDTO sendMessage(MessageDTO messageDTO) throws IotException;
     MessageDTO sendMessageInCode(MessageDTO messageDTO) throws IotException;
     Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException ;
     Optional<MessageDTO> getMessage(Long idObj, String codiceFiscale) throws IotException ;

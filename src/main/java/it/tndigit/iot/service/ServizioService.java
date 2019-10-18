@@ -1,10 +1,10 @@
 package it.tndigit.iot.service;
 
-import it.tndigit.iot.service.dto.EnteDTO;
+import it.tndigit.iot.service.dto.ServizioDTO;
 
 import java.util.Optional;
 
-public interface EnteService {
+public interface ServizioService {
 
 
     /**
@@ -14,7 +14,7 @@ public interface EnteService {
      * @return the persisted entity
      */
 
-    EnteDTO save(EnteDTO enteDTO);
+    ServizioDTO save(ServizioDTO enteDTO);
 
     /**
      * Get the "id" ente.
@@ -22,7 +22,7 @@ public interface EnteService {
      * @param id the id of the entity
      * @return the entity
      */
-    Optional<EnteDTO> findOne(Long id);
+    Optional<ServizioDTO> findOne(Long id);
 
     /**
      * Delete the "id" ente.

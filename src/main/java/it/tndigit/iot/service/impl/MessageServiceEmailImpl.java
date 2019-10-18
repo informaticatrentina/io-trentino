@@ -9,12 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jms.Message;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
@@ -25,12 +25,12 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
 
 
 
-    @Autowired
-    private JavaMailSender javaMailSender;
 
     @Autowired
     ApplicationContext applicationContext;
 
+//    @Autowired
+//    MailSender mailSender;
 
     @Override
     public MessageDTO sendMessage(MessageDTO messageDTO) throws IotException {
@@ -55,9 +55,9 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
             mailMessage.setSubject(messageDTO.getOggetto());
             mailMessage.setText(messageDTO.getTesto());
             mailMessage.setFrom("io-trentino@tndigit.it");
-            javaMailSender.send(mailMessage);
-            this.createNotification(messageDTO);
-            this.saveNotification(messageDTO);
+           // javaMailSender.send(mailMessage);
+//            this.createNotification(messageDTO);
+//            this.saveNotification(messageDTO);
         }catch (Exception ex){
             log.error(ex.getMessage());
 

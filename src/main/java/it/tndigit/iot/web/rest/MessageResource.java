@@ -100,7 +100,7 @@ public class MessageResource extends AbstractResource  {
         }else {
             messageDTO.setCodiceFiscale(codiceFiscale);
         }
-        //messageDTO = messageService.sendMessage(messageDTO);
+        messageDTO = messageService.sendMessageInCode(messageDTO);
 
 
         return ResponseEntity.created(new URI("/v1/api/message/" + codiceFiscale))
