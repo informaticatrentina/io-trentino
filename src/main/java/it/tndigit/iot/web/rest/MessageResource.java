@@ -74,43 +74,9 @@ public class MessageResource extends AbstractResource  {
                 .body(messageDTO);
     }
 
-    /**
-     * POST  /messages : Create a new Message.
-     *
-     * @param codiceFiscale the codiceFiscale to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new areaDTO, or with status 400 (Bad Request) if the area has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
-     */
-    @PostMapping("/message/payment/{codiceFiscale}")
-    @ApiOperation("Crea una nuova indicaotre nella politica nel sistema")
-    @LogExecutionTime
-    public ResponseEntity<MessageDTO> createMessageWithPayment(@Valid @RequestBody MessageDTO messageDTO,
-                                                    @PathVariable String codiceFiscale,
-                                                    BindingResult bindingResult) throws URISyntaxException {
-
-        messageValidator.validate(messageDTO, bindingResult,true);
-
-        if (bindingResult.getErrorCount() > 0) {
-            messageDTO.setErroreImprevisto(bindingResult.getAllErrors().get(0).toString());
-            return new ResponseEntity<>(messageDTO, HttpStatus.NOT_ACCEPTABLE);
-        }
-
-        if (codiceFiscale == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }else {
-            messageDTO.setCodiceFiscale(codiceFiscale);
-        }
-        messageDTO = messageService.sendMessageInCode(messageDTO);
-
-
-        return ResponseEntity.created(new URI("/v1/api/message/" + codiceFiscale))
-                .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, messageDTO.getIdObj().toString()))
-                .body(messageDTO);
-    }
-
 
     /**
-     * GET  /messaggio/{id}/{codiceFiscale} : get the "id" messaggio.
+     * GET  /message/{id}/{codiceFiscale} : get the "id" messaggio.
      *
      * @return the ResponseEntity with status 200 (OK) and with body the areaDTO, or with status 404 (Not Found)
      */
