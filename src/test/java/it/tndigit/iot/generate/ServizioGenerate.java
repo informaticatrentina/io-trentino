@@ -26,6 +26,7 @@ public class ServizioGenerate extends AbstractGenerate<ServizioPO, ServizioDTO> 
         po.setEmail(RandomStringUtils.randomAlphanumeric(10));
         po.setEmailPec(RandomStringUtils.randomAlphanumeric(10));
         po.setNomeEnte(RandomStringUtils.randomAlphabetic(200));
+        po.setNomeServizio(RandomStringUtils.randomAlphabetic(200));
         po.setNomeDipartimento(RandomStringUtils.randomAlphabetic(200));
         po.setTokenIoItalia(RandomStringUtils.randomAlphabetic(100));
 

@@ -4,7 +4,7 @@ package it.tndigit.iot.web.rest;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import it.tndigit.iot.logging.LogExecutionTime;
-import it.tndigit.iot.service.MessageService;
+import it.tndigit.iot.service.MessageServiceSend;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.web.rest.util.HeaderUtil;
 import it.tndigit.iot.web.validator.MessageValidator;
@@ -32,11 +32,11 @@ public class MessageResource extends AbstractResource  {
 
     private MessageValidator messageValidator;
 
-    private final MessageService messageService;
+    private final MessageServiceSend messageService;
 
 
     public MessageResource(MessageValidator messageValidator,
-                           MessageService messageService) {
+                           MessageServiceSend messageService) {
         this.messageValidator = messageValidator;
         this.messageService = messageService;
 

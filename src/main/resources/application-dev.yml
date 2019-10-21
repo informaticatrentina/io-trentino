@@ -27,27 +27,6 @@ spring:
           starttls:
             enable: true
 
-    # SSL, post 465
-    #spring.mail.properties.mail.smtp.socketFactory.port = 465
-    #spring.mail.properties.mail.smtp.socketFactory.class = javax.net.ssl.SSLSocketFactory
-
-
-
-
-  # Spring JMS Settings
-#  jms:
-#    listener:
-#      auto-startup: true
-#      concurrency: 10
-#      max-concurrency: 10
-#    pub-sub-domain: true
-#    template:
-#      delivery-mode: persistent
-#      priority: 100
-#      qos-enabled: true
-#      receive-timeout: 1000
-#      time-to-live: 36000
-
   activemq:
     broker-url: tcp://172.26.7.70:61616
     user: admin
@@ -144,6 +123,11 @@ server:
     auth: https://opv-test.tndigit.it/auth
 #  ioitalia:
 #    tocken-standard: 6141c7757be64538bef931860cb2e5e2
+
+
+#Per attivare la schedulazione è necessario
+#settare la chiave iot.cron.enable a true
+#la property fixedDelay definisce il tempo tra un'esecuzione e l'altra
 
 iot:
   encrypted:

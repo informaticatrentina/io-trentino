@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -43,16 +44,16 @@ public class ServizioResourceTest extends AbstractResourceTest{
     @Autowired
     private ServizioGenerate servizioGenerate;
 
-    private MockMvc restEnteMockMvc;
+    private MockMvc restServizioMockMvc;
 
-    private ServizioPO entePO;
+    private ServizioPO servizioPO;
 
 
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final ServizioResource areaResource = new ServizioResource(servizioService, servizioValidator);
-        this.restEnteMockMvc = MockMvcBuilders.standaloneSetup(areaResource)
+        this.restServizioMockMvc = MockMvcBuilders.standaloneSetup(areaResource)
                 .setCustomArgumentResolvers(pageableArgumentResolver)
                 .setControllerAdvice(exceptionTranslator)
                 .setConversionService(TestUtil.createFormattingConversionService())
@@ -62,18 +63,18 @@ public class ServizioResourceTest extends AbstractResourceTest{
 
     @Before
     public void initTest() {
-        entePO =  servizioGenerate.getObjectPO(new ServizioPO());
+        servizioPO =  servizioGenerate.getObjectPO(new ServizioPO());
 
     }
 
     @Test
-    public void createEnte()  throws  Exception{
+    public void createServizio()  throws  Exception{
 
         int databaseSizeBeforeCreate = servizioRepository.findAll().size();
 
         // Create the Area
-        ServizioDTO enteDTO = enteMapper.toDto(entePO);
-        restEnteMockMvc.perform(post("/v1/api/ente")
+        ServizioDTO enteDTO = enteMapper.toDto(servizioPO);
+        restServizioMockMvc.perform(post("/v1/api/servizio")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(enteDTO)))
                 .andExpect(status().isCreated());
@@ -82,26 +83,42 @@ public class ServizioResourceTest extends AbstractResourceTest{
         List<ServizioPO> enteList = servizioRepository.findAll();
         assertThat(enteList).hasSize(databaseSizeBeforeCreate + 1);
         ServizioPO testEnte = enteList.get(enteList.size() - 1);
-        assertThat(testEnte.getCodiceFiscale()).isEqualTo(entePO.getCodiceFiscale());
-        assertThat(testEnte.getEmail()).isEqualTo(entePO.getEmail());
-        assertThat(testEnte.getEmailPec()).isEqualTo(entePO.getEmailPec());
-        assertThat(testEnte.getNomeDipartimento()).isEqualTo(entePO.getNomeDipartimento());
-        assertThat(testEnte.getNomeEnte()).isEqualTo(entePO.getNomeEnte());
-        assertThat(testEnte.getTokenIoItalia()).isEqualTo(entePO.getTokenIoItalia());
+        assertThat(testEnte.getCodiceFiscale()).isEqualTo(servizioPO.getCodiceFiscale());
+        assertThat(testEnte.getEmail()).isEqualTo(servizioPO.getEmail());
+        assertThat(testEnte.getEmailPec()).isEqualTo(servizioPO.getEmailPec());
+        assertThat(testEnte.getNomeDipartimento()).isEqualTo(servizioPO.getNomeDipartimento());
+        assertThat(testEnte.getNomeEnte()).isEqualTo(servizioPO.getNomeEnte());
+        assertThat(testEnte.getTokenIoItalia()).isEqualTo(servizioPO.getTokenIoItalia());
 
 
 
     }
 
     @Test
-    public void getEnte()throws  Exception {
+    public void getServizio()throws  Exception {
+
+
+
     }
 
     @Test
-    public void updateEnte()throws  Exception {
+    public void updateServizio()throws  Exception {
     }
 
     @Test
-    public void deleteEnte()throws  Exception {
+    public void deleteServizio()throws  Exception {
+
+        ServizioPO servizioPODelete = servizioRepository.saveAndFlush(servizioGenerate.getObjectPO());
+        int databaseSizeBeforeDelete = servizioRepository.findAll().size();
+
+        restServizioMockMvc.perform(delete("/v1/api/servizio/{idObj}",servizioPODelete.getIdObj())
+                .accept(TestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk());
+
+        List<ServizioPO> servizioPOS = servizioRepository.findAll();
+        assertThat(servizioPOS).hasSize(databaseSizeBeforeDelete -1);
+
+
+
     }
 }

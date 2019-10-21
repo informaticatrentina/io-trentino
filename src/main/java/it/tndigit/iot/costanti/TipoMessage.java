@@ -1,7 +1,7 @@
 package it.tndigit.iot.costanti;
 
-import it.tndigit.iot.service.impl.MessageServiceEmailImpl;
-import it.tndigit.iot.service.impl.MessageServiceIoItaliaImpl;
+import it.tndigit.iot.service.impl.receive.MessageServiceEmailImpl;
+import it.tndigit.iot.service.impl.receive.MessageServiceIoItaliaImpl;
 
 /**
  * @author Mirko

@@ -4,12 +4,11 @@ package it.tndigit.iot.schedule;
 import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.costanti.TipoRuoli;
 import it.tndigit.iot.repository.MessageRepository;
-import it.tndigit.iot.service.MessageService;
+import it.tndigit.iot.service.MessageServiceSend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +27,7 @@ public class ScheduledTasks {
     private MessageRepository messageRepository;
 
     @Autowired
-    private MessageService messageService;
+    private MessageServiceSend messageService;
 
     @Scheduled(fixedDelayString = "${iot.cron.fixedDelay}")
     public void timerCheckIoItalia() {
@@ -43,14 +42,7 @@ public class ScheduledTasks {
                     messageService.checkMessage(messagePO.getIdObj(), messagePO.getCodiceFiscale());
                 });
 
-
-
         log.info("Check effettuati");
-
-
-
-
-
         AuthenticationUtil.clearAuthentication();
 
     }

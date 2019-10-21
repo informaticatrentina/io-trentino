@@ -3,10 +3,9 @@ package it.tndigit.iot.service;
 import it.tndigit.iot.exception.IotException;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 
-import javax.jms.Message;
+import java.util.Optional;
 
 public interface MessageServiceSend {
-
 
 
     /**
@@ -17,8 +16,9 @@ public interface MessageServiceSend {
      * @throws IotException
      */
 
-    MessageDTO sendMessage(MessageDTO messageDTO) throws IotException;
-    MessageDTO getMessage(MessageDTO messageDTO) throws IotException;
-    void receiveSendMessage(MessageDTO messageDTO) throws IotException;;
+    MessageDTO sendMessageInCode(MessageDTO messageDTO) throws IotException;
+    Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException ;
+    Optional<MessageDTO> getMessage(Long idObj, String codiceFiscale) throws IotException ;
+
 
 }

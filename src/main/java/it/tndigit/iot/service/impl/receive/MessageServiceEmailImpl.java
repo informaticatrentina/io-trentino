@@ -1,17 +1,16 @@
-package it.tndigit.iot.service.impl;
+package it.tndigit.iot.service.impl.receive;
 
 import it.tndigit.iot.exception.IotException;
-import it.tndigit.iot.service.MessageServiceSend;
+import it.tndigit.iot.service.MessageServiceReceive;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.dto.message.NotificationDTO;
+import it.tndigit.iot.service.impl.MessageServiceAbstract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
-import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +19,7 @@ import java.util.HashSet;
 
 @Service
 @Transactional
-public class MessageServiceEmailImpl extends MessageServiceAbstract implements MessageServiceSend {
+public class MessageServiceEmailImpl extends MessageServiceAbstract implements MessageServiceReceive {
     private final Logger log = LoggerFactory.getLogger(MessageServiceEmailImpl.class);
 
 

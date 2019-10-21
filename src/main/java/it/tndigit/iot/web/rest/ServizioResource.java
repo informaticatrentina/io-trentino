@@ -36,14 +36,14 @@ public class ServizioResource extends AbstractResource {
     private static final String ENTITY_NAME = "ServizioPO";
 
 
-    private final ServizioService ServizioService;
+    private final ServizioService servizioService;
 
-    private final ServizioValidator ServizioValidator;
+    private final ServizioValidator servizioValidator;
 
     public ServizioResource(ServizioService ServizioService, ServizioValidator ServizioValidator) {
 
-        this.ServizioService = ServizioService;
-        this.ServizioValidator = ServizioValidator;
+        this.servizioService = ServizioService;
+        this.servizioValidator = ServizioValidator;
     }
 
     /**
@@ -61,14 +61,14 @@ public class ServizioResource extends AbstractResource {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
-        ServizioValidator.validate(ServizioDTO,bindingResult);
+        servizioValidator.validate(ServizioDTO,bindingResult);
         if (bindingResult.getErrorCount()>0){
             ServizioDTO.setErroreImprevisto(bindingResult.getAllErrors().get(0).toString());
             return new ResponseEntity<>(ServizioDTO, HttpStatus.NOT_ACCEPTABLE);
         }
 
         try{
-            ServizioDTO result = ServizioService.save(ServizioDTO);
+            ServizioDTO result = servizioService.save(ServizioDTO);
             return ResponseEntity.created(new URI("/v1/api/servizio/" + result.getIdObj()))
                     .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getIdObj().toString()))
                     .body(result);
@@ -96,7 +96,7 @@ public class ServizioResource extends AbstractResource {
     public ResponseEntity<ServizioDTO> getServizio(@PathVariable Long idObj) {
         log.debug("REST request to get Area : {}", idObj);
 
-        Optional<ServizioDTO> ServizioDTO = ServizioService.findOne(idObj);
+        Optional<ServizioDTO> ServizioDTO = servizioService.findOne(idObj);
         if (ServizioDTO.isPresent()) {
             return new ResponseEntity<>(ServizioDTO.get(), HttpStatus.OK);
         }
@@ -123,14 +123,14 @@ public class ServizioResource extends AbstractResource {
         if (ServizioDTO.getIdObj() == null) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
-        ServizioValidator.validate(ServizioDTO,bindingResult);
+        servizioValidator.validate(ServizioDTO,bindingResult);
 
         if (bindingResult.getErrorCount()>0){
             ServizioDTO.setErroreImprevisto(bindingResult.getAllErrors().get(0).toString());
             return new ResponseEntity<>(ServizioDTO, HttpStatus.NOT_ACCEPTABLE);
         }
 
-        ServizioDTO = ServizioService.save(ServizioDTO);
+        ServizioDTO = servizioService.save(ServizioDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, ServizioDTO.getIdObj().toString()))
             .body(ServizioDTO);
@@ -147,7 +147,7 @@ public class ServizioResource extends AbstractResource {
     @ApiOperation("Cancella un Servizio dato un determinato idObj")
     @LogExecutionTime
     public ResponseEntity<Void> deleteServizio(@PathVariable Long idObj) {
-        ServizioService.delete(idObj);
+        servizioService.delete(idObj);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, idObj.toString())).build();
     }
 }

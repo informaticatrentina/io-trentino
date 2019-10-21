@@ -28,6 +28,12 @@ spring:
     initialization-mode: always
     continue-on-error: false
 
+  mail:
+    host: relay.infotn.it
+    port: 25
+    username:
+    password:
+
   h2:
     console:
       enabled: true
@@ -42,9 +48,6 @@ server:
 
 jwt:
   header: Authorization
-  secret: secret-sviluppo-iot
-
-
 
 application:
   protocollo: http

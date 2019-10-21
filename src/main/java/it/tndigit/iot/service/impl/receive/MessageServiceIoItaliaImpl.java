@@ -1,4 +1,4 @@
-package it.tndigit.iot.service.impl;
+package it.tndigit.iot.service.impl.receive;
 
 import it.tndigit.ioitalia.service.dto.*;
 import it.tndigit.ioitalia.web.rest.DefaultApi;
@@ -6,10 +6,10 @@ import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.domain.message.NotificationPO;
 import it.tndigit.iot.exception.IotException;
 import it.tndigit.iot.repository.MessageRepository;
-import it.tndigit.iot.service.MessageServiceSend;
+import it.tndigit.iot.service.MessageServiceReceive;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.dto.message.NotificationDTO;
-import it.tndigit.iot.service.dto.message.PaymentDTO;
+import it.tndigit.iot.service.impl.MessageServiceAbstract;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 
 @Component
-public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implements MessageServiceSend {
+public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implements MessageServiceReceive {
     private final Logger log = LoggerFactory.getLogger(MessageServiceIoItaliaImpl.class);
 
 
@@ -158,7 +158,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             newMessage.getContent().setMarkdown(messageDTO.getTesto());
             newMessage.getContent().setSubject(messageDTO.getOggetto());
 
-            if (messageDTO.getPaymentDTO().getIdObj()!=null){
+            if (messageDTO.getPaymentDTO() != null && messageDTO.getPaymentDTO().getIdObj()!=null){
                 //TODO: Mirko, da gestire tutti  i pagamenti
                 //newMessage.getContent()
 
