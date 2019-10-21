@@ -1,10 +1,9 @@
-package it.tndigit.iot.config;
+package it.tndigit.iot.schedule;
 
 
 import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.costanti.TipoRuoli;
 import it.tndigit.iot.repository.MessageRepository;
-import it.tndigit.iot.schedule.AuthenticationUtil;
 import it.tndigit.iot.service.MessageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,10 +20,7 @@ import java.time.LocalDateTime;
  *
  */
 
-
-@Component
 public class ScheduledTasks {
-
 
     private final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
@@ -34,7 +30,7 @@ public class ScheduledTasks {
     @Autowired
     private MessageService messageService;
 
-    @Scheduled(fixedDelay = 600000)
+    @Scheduled(fixedDelayString = "${iot.cron.fixedDelay}")
     public void timerCheckIoItalia() {
 
         AuthenticationUtil.configureAuthentication(TipoRuoli.JOB);

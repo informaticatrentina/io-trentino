@@ -128,7 +128,7 @@ spring:
 
 jwt:
   header: Authorization
-  secret: secret-sviluppo-iot
+  #secret: secret-sviluppo-iot
 
 
 
@@ -148,7 +148,9 @@ server:
 iot:
   encrypted:
     properties: ENC(uTSqb9grs1+slfdjksladfjsadfh+8)
-
+  cron:
+    fixedDelay: 60000
+    enable: false
 
 
 logging:
