@@ -1,4 +1,4 @@
-package it.tndigit.iot.web.config;
+package it.tndigit.iot.config;
 
 
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;

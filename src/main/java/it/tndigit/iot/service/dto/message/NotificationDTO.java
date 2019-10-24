@@ -14,7 +14,7 @@ public class NotificationDTO extends CommonDTO {
     @Autowired
     private MessageDTO messageDTO;
 
-    private String eMailNotification;
+    private String emailNotification;
 
     private String webhookNotification;
 
@@ -32,12 +32,12 @@ public class NotificationDTO extends CommonDTO {
         this.messageDTO = messageDTO;
     }
 
-    public String geteMailNotification() {
-        return eMailNotification;
+    public String getEmailNotification() {
+        return emailNotification;
     }
 
-    public void seteMailNotification(String eMailNotification) {
-        this.eMailNotification = eMailNotification;
+    public void setEmailNotification(String emailNotification) {
+        this.emailNotification = emailNotification;
     }
 
     public String getWebhookNotification() {

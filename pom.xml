@@ -12,7 +12,7 @@
 
     <groupId>it.tndigit</groupId>
     <artifactId>iot</artifactId>
-    <version>0.0.1</version>
+    <version>0.2.0</version>
     <packaging>war</packaging>
 
     <properties>
@@ -135,6 +135,22 @@
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-pool</artifactId>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.activemq.tooling/activemq-junit -->
+        <dependency>
+            <groupId>org.apache.activemq.tooling</groupId>
+            <artifactId>activemq-junit</artifactId>
+            <version>5.15.10</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>2.1.2</version>
+        </dependency>
+
+
 
         <!--        <dependency>-->
         <!--            <groupId>com.fasterxml.jackson.datatype</groupId>-->

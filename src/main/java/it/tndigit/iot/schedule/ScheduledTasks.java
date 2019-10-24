@@ -1,16 +1,14 @@
-package it.tndigit.iot.config;
+package it.tndigit.iot.schedule;
 
 
 import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.costanti.TipoRuoli;
 import it.tndigit.iot.repository.MessageRepository;
-import it.tndigit.iot.schedule.AuthenticationUtil;
-import it.tndigit.iot.service.MessageService;
+import it.tndigit.iot.service.MessageServiceSend;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 
@@ -21,10 +19,7 @@ import java.time.LocalDateTime;
  *
  */
 
-
-@Component
 public class ScheduledTasks {
-
 
     private final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
@@ -32,9 +27,9 @@ public class ScheduledTasks {
     private MessageRepository messageRepository;
 
     @Autowired
-    private MessageService messageService;
+    private MessageServiceSend messageService;
 
-    @Scheduled(fixedDelay = 600000)
+    @Scheduled(fixedDelayString = "${iot.cron.fixedDelay}")
     public void timerCheckIoItalia() {
 
         AuthenticationUtil.configureAuthentication(TipoRuoli.JOB);
@@ -47,14 +42,7 @@ public class ScheduledTasks {
                     messageService.checkMessage(messagePO.getIdObj(), messagePO.getCodiceFiscale());
                 });
 
-
-
         log.info("Check effettuati");
-
-
-
-
-
         AuthenticationUtil.clearAuthentication();
 
     }

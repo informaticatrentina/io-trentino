@@ -1,36 +1,35 @@
-package it.tndigit.iot.service.impl;
+package it.tndigit.iot.service.impl.receive;
 
 import it.tndigit.iot.exception.IotException;
-import it.tndigit.iot.service.MessageServiceSend;
+import it.tndigit.iot.service.MessageServiceReceive;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.dto.message.NotificationDTO;
+import it.tndigit.iot.service.impl.MessageServiceAbstract;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.jms.Message;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 
 @Service
 @Transactional
-public class MessageServiceEmailImpl extends MessageServiceAbstract implements MessageServiceSend {
+public class MessageServiceEmailImpl extends MessageServiceAbstract implements MessageServiceReceive {
     private final Logger log = LoggerFactory.getLogger(MessageServiceEmailImpl.class);
 
 
 
-    @Autowired
-    private JavaMailSender javaMailSender;
 
     @Autowired
     ApplicationContext applicationContext;
 
+//    @Autowired
+//    MailSender mailSender;
 
     @Override
     public MessageDTO sendMessage(MessageDTO messageDTO) throws IotException {
@@ -47,7 +46,7 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
     public void receiveSendMessage(MessageDTO messageDTO) throws IotException{
 
 
-        log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
+        log.info(" RICEVUTO MESSAGGIO EMAIL CON ID " + messageDTO.getIdObj());
 
         try{
             SimpleMailMessage mailMessage = new SimpleMailMessage();
@@ -55,9 +54,9 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
             mailMessage.setSubject(messageDTO.getOggetto());
             mailMessage.setText(messageDTO.getTesto());
             mailMessage.setFrom("io-trentino@tndigit.it");
-            javaMailSender.send(mailMessage);
-            this.createNotification(messageDTO);
-            this.saveNotification(messageDTO);
+           // javaMailSender.send(mailMessage);
+//            this.createNotification(messageDTO);
+//            this.saveNotification(messageDTO);
         }catch (Exception ex){
             log.error(ex.getMessage());
 
@@ -74,7 +73,7 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
 
         NotificationDTO notificationDTO = applicationContext.getBean(NotificationDTO.class);
         notificationDTO.setMessageDTO(messageDTO);
-        notificationDTO.seteMailNotification("SENT");
+        notificationDTO.setEmailNotification("SENT");
         notificationDTO.setStatus("OK");
         notificationDTO.setLastChance(LocalDateTime.now());
 

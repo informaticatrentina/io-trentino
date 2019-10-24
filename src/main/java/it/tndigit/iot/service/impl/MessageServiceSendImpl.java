@@ -1,22 +1,21 @@
 package it.tndigit.iot.service.impl;
 
 import it.tndigit.iot.common.UtilityIot;
-import it.tndigit.iot.domain.EntePO;
+import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.exception.IotException;
-import it.tndigit.iot.repository.EnteRepository;
+import it.tndigit.iot.repository.ServizioRepository;
 import it.tndigit.iot.repository.MessageRepository;
-import it.tndigit.iot.service.MessageService;
 import it.tndigit.iot.service.MessageServiceSend;
-import it.tndigit.iot.service.dto.EnteDTO;
+import it.tndigit.iot.service.MessageServiceReceive;
+import it.tndigit.iot.service.dto.ServizioDTO;
 import it.tndigit.iot.service.dto.message.MessageDTO;
-import it.tndigit.iot.service.mapper.EnteMapper;
+import it.tndigit.iot.service.mapper.ServizioMapper;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jms.core.JmsMessagingTemplate;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,8 +25,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
-public class MessageServiceImpl implements MessageService {
-    private final Logger log = LoggerFactory.getLogger(MessageServiceImpl.class);
+public class MessageServiceSendImpl implements MessageServiceSend {
+    private final Logger log = LoggerFactory.getLogger(MessageServiceSendImpl.class);
 
     @Autowired
     ApplicationContext applicationContext;
@@ -36,28 +35,26 @@ public class MessageServiceImpl implements MessageService {
     MessageRepository messageRepository;
 
     @Autowired
-    protected EnteRepository enteRepository;
-
-
+    protected ServizioRepository servizioRepository;
 
     @Autowired
     private MessageMapper messageMapper;
 
     @Autowired
-    private EnteMapper enteMapper;
+    private ServizioMapper enteMapper;
 
     @Autowired
     private JmsTemplate jmsMessagingTemplate;
 
 
-    protected Optional<EnteDTO> getEnte(){
+    protected Optional<ServizioDTO> getServizio(){
 
         String utente  = UtilityIot.getUserName();
 
         if (utente==null || utente.isEmpty()){
             return Optional.empty();
         }else {
-            Optional<EntePO> entePOOptional = enteRepository.findByEmailPec(utente);
+            Optional<ServizioPO> entePOOptional = servizioRepository.findByEmailPec(utente);
             if(entePOOptional.isPresent()){
                 return Optional.of(enteMapper.toDto(entePOOptional.get()));
             }
@@ -66,42 +63,14 @@ public class MessageServiceImpl implements MessageService {
     }
 
 
-    @Override
-    public MessageDTO sendMessage(MessageDTO messageDTO) throws IotException {
-        return null;
-
-
-//        Optional<EnteDTO> enteDTOOptional = getEnte();
-//        if (!enteDTOOptional.isPresent()){
-//            throw  new IotException("Impossibile inviare il messaggio, Ente NON presente");
-//        }
-//        messageDTO.setEnteDTO(enteDTOOptional.get());
-//
-//
-//        //Save the new message on the database
-//        MessagePO messagePO = messageMapper.toEntity(messageDTO);
-//        messagePO = messageRepository.saveAndFlush(messagePO);
-//
-//
-//        MessageServiceSend messageService = (MessageServiceSend) applicationContext.getBean(messageDTO.getTipoMessage().getMessageService());
-//        messageDTO = messageService.sendMessage(messageMapper.toDto(messagePO));
-//
-//        MessagePO messagePOCaricato = messageRepository.getOne(messagePO.getIdObj());
-//        messagePOCaricato.setExternID(messageDTO.getExternID());
-//        messagePO = messageRepository.saveAndFlush(messagePO);
-//        messageDTO = messageMapper.toDto(messagePO);
-//        return messageDTO;
-
-    }
 
     @Override
     public MessageDTO sendMessageInCode(MessageDTO messageDTO) throws IotException {
-
-        Optional<EnteDTO> enteDTOOptional = getEnte();
-        if (!enteDTOOptional.isPresent()){
-            throw  new IotException("Impossibile inviare il messaggio, Ente NON presente");
+        Optional<ServizioDTO> servizioDTOOptional = getServizio();
+        if (!servizioDTOOptional.isPresent()){
+            throw  new IotException("Impossibile inviare il messaggio, Servizio NON presente");
         }
-        messageDTO.setEnteDTO(enteDTOOptional.get());
+        messageDTO.setServizioDTO(servizioDTOOptional.get());
 
         //Save the new message on the database
         MessagePO messagePO = messageMapper.toEntity(messageDTO);
@@ -130,7 +99,7 @@ public class MessageServiceImpl implements MessageService {
         if (messagePO.isPresent()){
             //Converto il messaggio
             MessageDTO messageDTO = messageMapper.toDto(messagePO.get());
-            MessageServiceSend messageService = (MessageServiceSend) applicationContext.getBean(messagePO.get().getTipoMessage().getMessageService());
+            MessageServiceReceive messageService = (MessageServiceReceive) applicationContext.getBean(messagePO.get().getTipoMessage().getMessageService());
             messageDTO = messageService.getMessage(messageDTO);
 
             log.info("FINE elaborazione check per id " + idObj + ", codice fiscale "+ codiceFiscale);

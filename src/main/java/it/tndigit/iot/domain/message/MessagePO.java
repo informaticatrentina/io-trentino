@@ -1,8 +1,9 @@
 package it.tndigit.iot.domain.message;
 
 import it.tndigit.iot.costanti.TipoMessage;
-import it.tndigit.iot.domain.EntePO;
+import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.common.DatePO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.stereotype.Component;
@@ -23,8 +24,8 @@ public class MessagePO extends DatePO {
 
 
     @ManyToOne()
-    @JoinColumn(name = "IDOBJ_ENTE")
-    private EntePO entePO;
+    @JoinColumn(name = "IDOBJ_SERVIZIO")
+    private ServizioPO servizioPO;
 
     @NotNull
     @Column(name = "CODICEFISCALE")
@@ -62,6 +63,21 @@ public class MessagePO extends DatePO {
     @OneToMany(mappedBy = "messagePO", fetch=FetchType.LAZY, cascade = CascadeType.ALL )
     private Set<NotificationPO> notificationPOS;
 
+
+    @ManyToOne
+    @JoinColumn(name = "IDPAGAMENTO")
+    @Autowired
+    private PaymentPO paymentPO;
+
+
+    public ServizioPO getServizioPO() {
+        return servizioPO;
+    }
+
+    public void setServizioPO(ServizioPO servizioPO) {
+        this.servizioPO = servizioPO;
+    }
+
     public String getCodiceFiscale() {
         return codiceFiscale;
     }
@@ -69,7 +85,6 @@ public class MessagePO extends DatePO {
     public void setCodiceFiscale(String codiceFiscale) {
         this.codiceFiscale = codiceFiscale;
     }
-
 
     public TipoMessage getTipoMessage() {
         return tipoMessage;
@@ -95,6 +110,14 @@ public class MessagePO extends DatePO {
         this.oggetto = oggetto;
     }
 
+    public String getTesto() {
+        return testo;
+    }
+
+    public void setTesto(String testo) {
+        this.testo = testo;
+    }
+
     public LocalDateTime getScadenza() {
         return scadenza;
     }
@@ -103,12 +126,12 @@ public class MessagePO extends DatePO {
         this.scadenza = scadenza;
     }
 
-    public String getTesto() {
-        return testo;
+    public Integer getTimeToLive() {
+        return timeToLive;
     }
 
-    public void setTesto(String testo) {
-        this.testo = testo;
+    public void setTimeToLive(Integer timeToLive) {
+        this.timeToLive = timeToLive;
     }
 
     public String getEmail() {
@@ -127,27 +150,19 @@ public class MessagePO extends DatePO {
         this.notificationPOS = notificationPOS;
     }
 
-    public Integer getTimeToLive() {
-        return timeToLive;
+    public PaymentPO getPaymentPO() {
+        return paymentPO;
     }
 
-    public void setTimeToLive(Integer timeToLive) {
-        this.timeToLive = timeToLive;
-    }
-
-
-    public EntePO getEntePO() {
-        return entePO;
-    }
-
-    public void setEntePO(EntePO entePO) {
-        this.entePO = entePO;
+    public void setPaymentPO(PaymentPO paymentPO) {
+        this.paymentPO = paymentPO;
     }
 
     @Override
     public String toString() {
         return "MessagePO{" +
-                "codiceFiscale='" + codiceFiscale + '\'' +
+                "servizioPO=" + servizioPO +
+                ", codiceFiscale='" + codiceFiscale + '\'' +
                 ", tipoMessage=" + tipoMessage +
                 ", externID='" + externID + '\'' +
                 ", oggetto='" + oggetto + '\'' +

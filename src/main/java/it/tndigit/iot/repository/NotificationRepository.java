@@ -13,5 +13,4 @@ public interface NotificationRepository extends JpaRepository<NotificationPO, Lo
 
     Optional<NotificationPO> findByMessagePO_IdObjAndEmailNotificationAndWebhookNotificationAndStatus (Long idMessaggio, String eNot, String webNot, String status);
 
-
 }

@@ -9,11 +9,11 @@ import javax.validation.constraints.NotNull;
 
 
 @Entity
-@Table(name = "IOTTENTE")
+@Table(name = "IOTTSERVIZIO")
 @Inheritance(strategy = InheritanceType.JOINED)
 @Component
 @Scope("prototype")
-public class EntePO  extends DatePO {
+public class ServizioPO extends DatePO {
 
     @NotNull
     @Column(name = "NOME_ENTE",unique = true)
@@ -24,7 +24,14 @@ public class EntePO  extends DatePO {
     private String nomeDipartimento;
 
     @NotNull
-    @Column(name = "CODICEFISCALE",unique = true)
+    @Column(name = "NOME_SERVIZIO",unique = true)
+    private String nomeServizio;
+
+    @Column(name = "CODICE_SERVIZIO_IOITALIA")
+    private String codiceServizioIoItalia;
+
+    @NotNull
+    @Column(name = "CODICEFISCALE")
     private String codiceFiscale;
 
     @NotNull
@@ -52,6 +59,22 @@ public class EntePO  extends DatePO {
 
     public void setNomeDipartimento(String nomeDipartimento) {
         this.nomeDipartimento = nomeDipartimento;
+    }
+
+    public String getNomeServizio() {
+        return nomeServizio;
+    }
+
+    public void setNomeServizio(String nomeServizio) {
+        this.nomeServizio = nomeServizio;
+    }
+
+    public String getCodiceServizioIoItalia() {
+        return codiceServizioIoItalia;
+    }
+
+    public void setCodiceServizioIoItalia(String codiceServizioIoItalia) {
+        this.codiceServizioIoItalia = codiceServizioIoItalia;
     }
 
     public String getCodiceFiscale() {
@@ -84,5 +107,20 @@ public class EntePO  extends DatePO {
 
     public void setTokenIoItalia(String tokenIoItalia) {
         this.tokenIoItalia = tokenIoItalia;
+    }
+
+    @Override
+    public String toString() {
+        return "ServizioPO{" +
+                "nomeEnte='" + nomeEnte + '\'' +
+                ", nomeDipartimento='" + nomeDipartimento + '\'' +
+                ", nomeServizio='" + nomeServizio + '\'' +
+                ", codiceServizioIoItalia='" + codiceServizioIoItalia + '\'' +
+                ", codiceFiscale='" + codiceFiscale + '\'' +
+                ", email='" + email + '\'' +
+                ", emailPec='" + emailPec + '\'' +
+                ", tokenIoItalia='" + tokenIoItalia + '\'' +
+                ", idObj=" + idObj +
+                '}';
     }
 }

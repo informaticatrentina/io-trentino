@@ -1,12 +1,13 @@
 package it.tndigit.iot.service.impl;
 
-import it.tndigit.iot.repository.EnteRepository;
+import it.tndigit.iot.repository.ServizioRepository;
 import it.tndigit.iot.repository.NotificationRepository;
-import it.tndigit.iot.service.MessageServiceSend;
+import it.tndigit.iot.service.MessageServiceReceive;
 import it.tndigit.iot.service.mapper.NotificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 
-public abstract class MessageServiceAbstract implements MessageServiceSend {
+public abstract class MessageServiceAbstract implements MessageServiceReceive {
 
     @Autowired
     protected NotificationRepository notificationRepository;
@@ -15,10 +16,10 @@ public abstract class MessageServiceAbstract implements MessageServiceSend {
     protected NotificationMapper notificationMapper;
 
     @Autowired
-    protected EnteRepository enteRepository;
+    protected ServizioRepository servizioRepository;
 
-
-
+    @Autowired
+    protected  JavaMailSender javaMailSender;
 
 
 }

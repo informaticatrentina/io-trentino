@@ -4,15 +4,12 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.service.dto.CommonDTO;
-import it.tndigit.iot.service.dto.EnteDTO;
+import it.tndigit.iot.service.dto.ServizioDTO;
 import org.springframework.context.annotation.Scope;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Component;
 
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 @Component
@@ -26,7 +23,7 @@ public class MessageDTO extends CommonDTO implements Serializable {
 
     private TipoMessage TipoMessage;
 
-    private EnteDTO enteDTO;
+    private ServizioDTO servizioDTO;
 
     private String externID;
 
@@ -42,24 +39,12 @@ public class MessageDTO extends CommonDTO implements Serializable {
 
     private String email;
 
-    //@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
-//    @DateTimeFormat(iso = DateTimeFormat.ISO.TIME)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-
-    //@DateTimeFormat(iso = DateTimeFormatter.ISO_LOCAL_DATE_TIME)
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private String scadenza;
 
     private Set<NotificationDTO> notificationDTOS;
 
-
-    public Set<NotificationDTO> getNotificationDTOS() {
-        return notificationDTOS;
-    }
-
-    public void setNotificationDTOS(Set<NotificationDTO> notificationDTOS) {
-        this.notificationDTOS = notificationDTOS;
-    }
+    private PaymentDTO paymentDTO;
 
     public String getCodiceFiscale() {
         return codiceFiscale;
@@ -77,12 +62,28 @@ public class MessageDTO extends CommonDTO implements Serializable {
         TipoMessage = tipoMessage;
     }
 
+    public ServizioDTO getServizioDTO() {
+        return servizioDTO;
+    }
+
+    public void setServizioDTO(ServizioDTO servizioDTO) {
+        this.servizioDTO = servizioDTO;
+    }
+
     public String getExternID() {
         return externID;
     }
 
     public void setExternID(String externID) {
         this.externID = externID;
+    }
+
+    public Integer getTimeToLive() {
+        return timeToLive;
+    }
+
+    public void setTimeToLive(Integer timeToLive) {
+        this.timeToLive = timeToLive;
     }
 
     public String getOggetto() {
@@ -101,14 +102,6 @@ public class MessageDTO extends CommonDTO implements Serializable {
         this.testo = testo;
     }
 
-    public Integer getTimeToLive() {
-        return timeToLive;
-    }
-
-    public void setTimeToLive(Integer timeToLive) {
-        this.timeToLive = timeToLive;
-    }
-
     public String getEmail() {
         return email;
     }
@@ -117,28 +110,27 @@ public class MessageDTO extends CommonDTO implements Serializable {
         this.email = email;
     }
 
-//    public LocalDateTime getScadenza() {
-//        return scadenza;
-//    }
-//
-//    public void setScadenza(LocalDateTime scadenza) {
-//        this.scadenza = scadenza;
-//    }
-
-    public EnteDTO getEnteDTO() {
-        return enteDTO;
-    }
-
-    public void setEnteDTO(EnteDTO enteDTO) {
-        this.enteDTO = enteDTO;
-    }
-
-
     public String getScadenza() {
         return scadenza;
     }
 
     public void setScadenza(String scadenza) {
         this.scadenza = scadenza;
+    }
+
+    public Set<NotificationDTO> getNotificationDTOS() {
+        return notificationDTOS;
+    }
+
+    public void setNotificationDTOS(Set<NotificationDTO> notificationDTOS) {
+        this.notificationDTOS = notificationDTOS;
+    }
+
+    public PaymentDTO getPaymentDTO() {
+        return paymentDTO;
+    }
+
+    public void setPaymentDTO(PaymentDTO paymentDTO) {
+        this.paymentDTO = paymentDTO;
     }
 }

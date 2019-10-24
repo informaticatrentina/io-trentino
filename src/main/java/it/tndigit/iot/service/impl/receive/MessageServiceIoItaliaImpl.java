@@ -1,4 +1,4 @@
-package it.tndigit.iot.service.impl;
+package it.tndigit.iot.service.impl.receive;
 
 import it.tndigit.ioitalia.service.dto.*;
 import it.tndigit.ioitalia.web.rest.DefaultApi;
@@ -6,9 +6,10 @@ import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.domain.message.NotificationPO;
 import it.tndigit.iot.exception.IotException;
 import it.tndigit.iot.repository.MessageRepository;
-import it.tndigit.iot.service.MessageServiceSend;
+import it.tndigit.iot.service.MessageServiceReceive;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.dto.message.NotificationDTO;
+import it.tndigit.iot.service.impl.MessageServiceAbstract;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
-import javax.jms.Message;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -28,7 +28,7 @@ import java.util.Optional;
  */
 
 @Component
-public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implements MessageServiceSend {
+public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implements MessageServiceReceive {
     private final Logger log = LoggerFactory.getLogger(MessageServiceIoItaliaImpl.class);
 
 
@@ -53,32 +53,28 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 
     }
 
-
     @JmsListener(destination = "IO_ITALIA_QUEUE", containerFactory = "myFactory")
     public void receiveSendMessage(MessageDTO messageDTO) throws IotException {
 
-
-
         log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
+        defaultApi.getApiClient().setApiKey(messageDTO.getServizioDTO().getTokenIoItalia());
+        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
+        if (!limitedProfile.isSenderAllowed()){
+            messageDTO.setErroreImprevisto("Permesso negato");
+            throw new IotException("Impossibile mandare il messaggio, utente NON abilitato");
+        }
 
-//        defaultApi.getApiClient().setApiKey(messageDTO.getEnteDTO().getTokenIoItalia());
-//        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
-//        if (!limitedProfile.isSenderAllowed()){
-//            messageDTO.setErroreImprevisto("Permesso negato");
-//            return messageDTO;
-//        }
-//        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
-//        messageDTO.setExternID(inlineResponse201.getId());
-//
-//        Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
-//
-//        if (messagePOCaricato.isPresent()){
-//            MessagePO messagePO = messagePOCaricato.get();
-//            messagePO.setExternID(messageDTO.getExternID());
-//            messagePO = messageRepository.saveAndFlush(messagePO);
-//            messageDTO = messageMapper.toDto(messagePO);
-//
-//        }
+        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
+        messageDTO.setExternID(inlineResponse201.getId());
+
+        Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
+        if (messagePOCaricato.isPresent()){
+            MessagePO messagePO = messagePOCaricato.get();
+            messagePO.setExternID(messageDTO.getExternID());
+            messagePO = messageRepository.saveAndFlush(messagePO);
+            messageDTO = messageMapper.toDto(messagePO);
+
+        }
 
 
     }
@@ -86,14 +82,10 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 
     @Override
     public MessageDTO getMessage(MessageDTO messageDTO) throws IotException {
-
-        defaultApi.getApiClient().setApiKey(messageDTO.getEnteDTO().getTokenIoItalia());
-
+        defaultApi.getApiClient().setApiKey(messageDTO.getServizioDTO().getTokenIoItalia());
         MessageResponseWithContent messageResponseWithContent= defaultApi.getMessage(messageDTO.getCodiceFiscale() , messageDTO.getExternID());
         this.convertNotification(messageResponseWithContent,messageDTO);
         this.saveCheck(messageDTO);
-
-
         return messageDTO;
     }
 
@@ -106,10 +98,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
      * Save the IOItalia portal check on db
      * Insert a NotificationPO  object  if the state are't already present in the database
      * Update the note field and lastChance field of the NotificationPO objerct is it is already present in the database
-     *
      */
-
-
     private void saveCheck(MessageDTO messageDTO) {
 
         //get the last nofication for insert or update it
@@ -117,18 +106,15 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
                 .stream()
                 .filter(notificationDTO -> notificationDTO.getIdObj()==null)
                 .findFirst();
-
-
         if (notificationDTOOptional.isPresent()){
             //Read on db to obtain the correct notification
             Optional<NotificationPO> notificationPOOptional =
                     notificationRepository.findByMessagePO_IdObjAndEmailNotificationAndWebhookNotificationAndStatus(
                             messageDTO.getIdObj(),
-                            notificationDTOOptional.get().geteMailNotification(),
+                            notificationDTOOptional.get().getEmailNotification(),
                             notificationDTOOptional.get().getWebhookNotification(),
                             notificationDTOOptional.get().getStatus()
                     );
-
             if (notificationPOOptional.isPresent()){
                 notificationPOOptional.get().setLastChance(LocalDateTime.now());
                 notificationPOOptional.get().setNote(notificationPOOptional.get().getNote() + notificationDTOOptional.get().getNote() );
@@ -136,8 +122,6 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             }else {
                 notificationRepository.saveAndFlush(notificationMapper.toEntity(notificationDTOOptional.get()));
             }
-
-
         }
     }
 
@@ -173,6 +157,13 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 
             newMessage.getContent().setMarkdown(messageDTO.getTesto());
             newMessage.getContent().setSubject(messageDTO.getOggetto());
+
+            if (messageDTO.getPaymentDTO() != null && messageDTO.getPaymentDTO().getIdObj()!=null){
+                //TODO: Mirko, da gestire tutti  i pagamenti
+                //newMessage.getContent()
+
+            }
+
             //newMessage.getContent().setPaymentData(paymentData);
             //newMessage.getDefaultAddresses().setEmail(messageDTO.getEmail());
 
@@ -195,11 +186,10 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
         if (log.isDebugEnabled()){
             log.debug("Inizio elaborazione di conversione notirifa");
         }
-
         NotificationDTO notificationDTO = applicationContext.getBean(NotificationDTO.class);
         notificationDTO.setMessageDTO(messageDTO);
         if (messageResponseWithContent.getNotification()!=null){
-            notificationDTO.seteMailNotification(messageResponseWithContent.getNotification().getEmail());
+            notificationDTO.setEmailNotification(messageResponseWithContent.getNotification().getEmail());
         }
         notificationDTO.setWebhookNotification(messageResponseWithContent.getNotification().getWebhook());
         notificationDTO.setStatus(messageResponseWithContent.getStatus());
@@ -211,6 +201,4 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
         }
         messageDTO.getNotificationDTOS().add(notificationDTO);
     }
-
-
 }

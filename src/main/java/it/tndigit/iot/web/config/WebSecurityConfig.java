@@ -40,6 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v1/api/**").permitAll()
                 .antMatchers("/**", "/swagger-ui.html/**", "/actuator/**").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "**/favicon.ico").anonymous()
+                .antMatchers("/v1/api/servizio/**").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .logout()

@@ -2,8 +2,8 @@ package it.tndigit.iot.web.filter;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import it.tndigit.auth.web.controller.GestioneAuthApi;
-import it.tndigit.iot.domain.EntePO;
-import it.tndigit.iot.repository.EnteRepository;
+import it.tndigit.iot.domain.ServizioPO;
+import it.tndigit.iot.repository.ServizioRepository;
 import it.tndigit.iot.web.util.JwtUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
 
 
     @Autowired
-    protected EnteRepository enteRepository;
+    protected ServizioRepository servizioRepository;
 
 
     @Value("${server.origin.auth}")
@@ -48,7 +48,7 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
 
         try{
 
-            if (request.getRequestURI().contains("/v1/api")){
+            if (request.getRequestURI().contains("/v1/api") && !request.getRequestURI().contains("servizio")){
                 Optional<String> authToken = Optional.ofNullable(request.getHeader(this.tokenHeader))
                         .map(v -> v.replace(BEARER, "").trim())
                         .map(v -> v.replace("%20", "").trim())
@@ -63,7 +63,7 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
                         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                         userDetails = new JwtUser(returnValue,"",authorities, true);
-                        Optional<EntePO> entePOOptional = enteRepository.findByEmailPec(returnValue);
+                        Optional<ServizioPO> entePOOptional = servizioRepository.findByEmailPec(returnValue);
                         if (entePOOptional.isPresent()){
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
@@ -82,9 +82,6 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
                 }
 
             }
-
-
-
 
             chain.doFilter(request, response);
 
