@@ -115,7 +115,7 @@ public class MessageResourceTest extends AbstractResourceTest{
         // Create the Area
         MessageDTO messageDTO = messageMapper.toDto(messagePO);
 
-        restMessageMockMvc.perform(post("/v1/api/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
                 .andExpect(status().isCreated());
@@ -137,13 +137,12 @@ public class MessageResourceTest extends AbstractResourceTest{
     @Test
     public void createMessageWithOutServizio() throws Exception {
 
-
         MessagePO messagePO = messageGenerate.getObjectPO(new MessagePO());
 
         int databaseSizeBeforeCreate = messageRepository.findAll().size();
         // Create the Area
         MessageDTO messageDTO = messageMapper.toDto(messagePO);
-        restMessageMockMvc.perform(post("/v1/api/message/{codiceFiscale}", messageDTO.getCodiceFiscale())
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}", messageDTO.getCodiceFiscale())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
                 .andExpect(status().isBadRequest())

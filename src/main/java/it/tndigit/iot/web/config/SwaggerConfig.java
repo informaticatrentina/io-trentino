@@ -21,7 +21,7 @@ import java.util.Set;
 
 @Configuration
 @EnableSwagger2
-@ComponentScan("it.tndigit.iop.web.rest")
+@ComponentScan("it.tndigit.iot.web.rest")
 public class SwaggerConfig{
 
     @Bean
@@ -32,7 +32,7 @@ public class SwaggerConfig{
                 .select()
                 //.apis(RequestHandlerSelectors.any())
                 .apis(RequestHandlerSelectors.basePackage("it.tndigit.iot.web.rest"))
-                .paths(PathSelectors.ant("/v1/api/**"))
+                .paths(PathSelectors.ant("/api/v1/**"))
                 .build()
                 .securitySchemes(securitySchemes())
                 .securityContexts(securityContexts());
@@ -41,7 +41,7 @@ public class SwaggerConfig{
 
     public ApiInfo apiInfoV1() {
         return new ApiInfoBuilder()
-                .title("IO.TRENTINO")
+                .title("IO-TRENTINO")
                 .description("API per la comunicazione con IO Italia")
                 .license("Apache 2.0")
                 .licenseUrl("http://www.apache.org/licenses/LICENSE-2.0.html")

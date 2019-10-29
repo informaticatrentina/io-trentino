@@ -48,7 +48,7 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
 
         try{
 
-            if (request.getRequestURI().contains("/v1/api") && !request.getRequestURI().contains("servizio")){
+            if (request.getRequestURI().contains("/api/v1/") && !request.getRequestURI().contains("servizio")){
                 Optional<String> authToken = Optional.ofNullable(request.getHeader(this.tokenHeader))
                         .map(v -> v.replace(BEARER, "").trim())
                         .map(v -> v.replace("%20", "").trim())

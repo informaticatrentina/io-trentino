@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -54,7 +55,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
     }
 
     @JmsListener(destination = "IO_ITALIA_QUEUE", containerFactory = "myFactory")
-    public void receiveSendMessage(MessageDTO messageDTO) throws IotException {
+    public void receiveSendMessage(MessageDTO messageDTO) throws IotException, RestClientException {
 
         log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
         defaultApi.getApiClient().setApiKey(messageDTO.getServizioDTO().getTokenIoItalia());
@@ -64,13 +65,18 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             throw new IotException("Impossibile mandare il messaggio, utente NON abilitato");
         }
 
-        InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
-        messageDTO.setExternID(inlineResponse201.getId());
+        try{
+            InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
+            messageDTO.setExternID(inlineResponse201.getId());
+        }catch (Exception ex){
+            messageDTO.setErrorSend(ex.getMessage());
+        }
 
         Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
         if (messagePOCaricato.isPresent()){
             MessagePO messagePO = messagePOCaricato.get();
             messagePO.setExternID(messageDTO.getExternID());
+            messagePO.setErrorSend(messageDTO.getErrorSend());
             messagePO = messageRepository.saveAndFlush(messagePO);
             messageDTO = messageMapper.toDto(messagePO);
 
