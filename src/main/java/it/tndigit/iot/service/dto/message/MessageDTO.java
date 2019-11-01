@@ -46,6 +46,8 @@ public class MessageDTO extends CommonDTO implements Serializable {
 
     private PaymentDTO paymentDTO;
 
+    private String errorSend;
+
     public String getCodiceFiscale() {
         return codiceFiscale;
     }
@@ -132,5 +134,13 @@ public class MessageDTO extends CommonDTO implements Serializable {
 
     public void setPaymentDTO(PaymentDTO paymentDTO) {
         this.paymentDTO = paymentDTO;
+    }
+
+    public String getErrorSend() {
+        return errorSend;
+    }
+
+    public void setErrorSend(String errorSend) {
+        this.errorSend = errorSend;
     }
 }

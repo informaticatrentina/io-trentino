@@ -37,10 +37,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.cors();
         httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER);
         httpSecurity.authorizeRequests()
-                .antMatchers("/v1/api/**").permitAll()
+                .antMatchers("/api/v1/**").permitAll()
                 .antMatchers("/**", "/swagger-ui.html/**", "/actuator/**").permitAll()
                 .antMatchers("/css/**", "/js/**", "/img/**", "**/favicon.ico").anonymous()
-                .antMatchers("/v1/api/servizio/**").permitAll()
+                .antMatchers("/api/v1/servizio/**").permitAll()
                 .anyRequest().permitAll()
                 .and()
                 .logout()

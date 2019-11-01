@@ -74,7 +74,7 @@ public class ServizioResourceTest extends AbstractResourceTest{
 
         // Create the Area
         ServizioDTO enteDTO = enteMapper.toDto(servizioPO);
-        restServizioMockMvc.perform(post("/v1/api/servizio")
+        restServizioMockMvc.perform(post("/api/v1/servizio")
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(enteDTO)))
                 .andExpect(status().isCreated());
@@ -111,7 +111,7 @@ public class ServizioResourceTest extends AbstractResourceTest{
         ServizioPO servizioPODelete = servizioRepository.saveAndFlush(servizioGenerate.getObjectPO());
         int databaseSizeBeforeDelete = servizioRepository.findAll().size();
 
-        restServizioMockMvc.perform(delete("/v1/api/servizio/{idObj}",servizioPODelete.getIdObj())
+        restServizioMockMvc.perform(delete("/api/v1/servizio/{idObj}",servizioPODelete.getIdObj())
                 .accept(TestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk());
 

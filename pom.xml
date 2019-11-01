@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>it.tndigit</groupId>
-    <artifactId>iot</artifactId>
+    <artifactId>io-trentino</artifactId>
     <version>0.2.0</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -28,6 +28,7 @@
         <xalan>2.7.2</xalan>
         <org.apache.maven.plugins>3.8.1</org.apache.maven.plugins>
         <io.jsonwebtoken>0.9.0</io.jsonwebtoken>
+        <docker.image.prefix>tndigit</docker.image.prefix>
     </properties>
 
     <dependencies>
@@ -54,15 +55,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.cloud</groupId>-->
-        <!--            <artifactId>spring-cloud-starter-sleuth</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>org.springframework.cloud</groupId>-->
-        <!--            <artifactId>spring-cloud-starter-zipkin</artifactId>-->
-        <!--        </dependency>-->
-        <!-- send email -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
@@ -108,7 +100,7 @@
         </dependency>
 
         <dependency>
-            <groupId> it.tndigit.iot</groupId>
+            <groupId>it.tndigit.iot</groupId>
             <artifactId>spring-ioitalia-api-client</artifactId>
             <version>${it.infotn.ioitalia}</version>
             <scope>compile</scope>
@@ -149,34 +141,6 @@
             <artifactId>jasypt-spring-boot-starter</artifactId>
             <version>2.1.2</version>
         </dependency>
-
-
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.fasterxml.jackson.datatype</groupId>-->
-        <!--            <artifactId>jackson-datatype-jsr310</artifactId>-->
-        <!--            <version>2.10.0</version>-->
-        <!--        </dependency>-->
-
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.fasterxml.jackson.datatype</groupId>-->
-        <!--            <artifactId>jackson-datatype-jsr310</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--            <artifactId>jackson-databind</artifactId>-->
-        <!--            <version>2.10.0</version>-->
-        <!--        </dependency>-->
-
-        <!--        <dependency>-->
-        <!--            <groupId>com.fasterxml.jackson.module</groupId>-->
-        <!--            <artifactId>jackson-modules-java8</artifactId>-->
-        <!--            <version>2.10.0</version>-->
-        <!--            <type>pom</type>-->
-        <!--            <scope>runtime</scope>-->
-        <!--        </dependency>-->
-
 
         <!-- https://mvnrepository.com/artifact/org.zalando/problem-spring-web -->
         <dependency>
@@ -237,20 +201,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-envers</artifactId>
         </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.codahale.metrics/metrics-core -->
-        <!--        <dependency>-->
-        <!--            <groupId>com.codahale.metrics</groupId>-->
-        <!--            <artifactId>metrics-core</artifactId>-->
-        <!--            <version>3.0.2</version>-->
-        <!--        </dependency>-->
-        <!--        &lt;!&ndash; https://mvnrepository.com/artifact/io.dropwizard.metrics/metrics-annotation &ndash;&gt;-->
-        <!--        <dependency>-->
-        <!--            <groupId>io.dropwizard.metrics</groupId>-->
-        <!--            <artifactId>metrics-annotation</artifactId>-->
-        <!--            <version>4.0.2</version>-->
-        <!--        </dependency>-->
-
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
@@ -283,17 +233,6 @@
             <artifactId>commons-io</artifactId>
             <version>${commons.io}</version>
         </dependency>
-
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.security</groupId>-->
-        <!--<artifactId>spring-security-test</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-test</artifactId>-->
-        <!--<scope>test</scope>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
@@ -314,19 +253,6 @@
 
 
     </dependencies>
-    <!--    <dependencyManagement>-->
-    <!--        <dependencies>-->
-    <!--            <dependency>-->
-    <!--                <groupId>org.springframework.cloud</groupId>-->
-    <!--                <artifactId>spring-cloud-dependencies</artifactId>-->
-    <!--                <version>${spring-cloud.version}</version>-->
-    <!--                <type>pom</type>-->
-    <!--                <scope>import</scope>-->
-    <!--            </dependency>-->
-
-    <!--        </dependencies>-->
-    <!--    </dependencyManagement>-->
-
 
     <build>
         <plugins>
@@ -336,6 +262,10 @@
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -357,6 +287,36 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
                 <version>3.0.5</version>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <configuration>
+                    <repository>${docker.image.prefix}/${project.artifactId}</repository>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>${project.artifactId}</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -396,36 +356,8 @@
                     <artifactId>spring-boot-starter-web</artifactId>
                 </dependency>
             </dependencies>
-        </profile>
-
-        <profile>
-            <id>dev-docker</id>
-            <properties>
-                <activeProfile>dev</activeProfile>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </dependency>
-            </dependencies>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-maven-plugin</artifactId>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-war-plugin</artifactId>
-                        <configuration>
-                            <warSourceDirectory>src/main/webapp/</warSourceDirectory>
-                            <warName>iot</warName>
-                        </configuration>
-                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-resources-plugin</artifactId>
@@ -457,28 +389,14 @@
                             </execution>
                         </executions>
                     </plugin>
+
                 </plugins>
+
             </build>
         </profile>
 
-
-
-
         <profile>
-            <id>bootPatTomcat</id>
-            <properties>
-                <activatedProperties>bootPatTomcat</activatedProperties>
-            </properties>
-            <dependencies>
-                <dependency>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-web</artifactId>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>prod</id >
+            <id>prod</id>
             <properties>
                 <activeProfile>prod</activeProfile>
             </properties>
@@ -563,7 +481,7 @@
         </profile>
 
         <profile>
-            <id>test</id >
+            <id>test</id>
             <properties>
                 <activeProfile>test</activeProfile>
             </properties>

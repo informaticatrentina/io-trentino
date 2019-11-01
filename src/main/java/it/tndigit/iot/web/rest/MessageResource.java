@@ -19,7 +19,6 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/v1/api")
 @Api( value="API MESSAGGI",
         description="Gestione di invio massaggi",
         tags = "GESTIONE MESSAGGI",

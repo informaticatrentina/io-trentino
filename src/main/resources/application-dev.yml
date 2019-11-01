@@ -47,7 +47,7 @@ spring:
 
   jpa:
     database: postgresql
-    show-sql: false
+    show-sql: true
     generate-ddl: true
     hibernate:
       ddl-auto: update
@@ -134,7 +134,7 @@ iot:
     properties: ENC(uTSqb9grs1+slfdjksladfjsadfh+8)
   cron:
     fixedDelay: 60000
-    enable: false
+    enable: true
 
 
 logging:

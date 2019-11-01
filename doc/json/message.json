@@ -30,8 +30,23 @@
 
 {
   "oggetto": "Ciao $i qui pare funzionare tutto",
-  "scadenza": "2019-09-30T08:02:19.482Z",
+  "scadenza": "2019-10-30T08:02:19.482Z",
   "testo": "Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto ",
   "timeToLive": 3600,
   "tipoMessage": "EMAIL"
 }
+
+{
+  "email": "string",
+  "oggetto": "Ciao $i qui pare funzionare tutto",
+  "paymentDTO": {
+    "importo": 20,
+    "invalid_after_due_date": true,
+    "numeroAvviso": "555555"
+  },
+  "testo": "Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto ",
+  "timeToLive": 3600,
+  "tipoMessage": "IO_ITALIA"
+}
+
+eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpb3QiLCJyb2xlcyI6W10sImlzRW5hYmxlZCI6dHJ1ZSwiZXhwIjo0NzI3MjgyNDAwLCJpYXQiOnsieWVhciI6MjAxOSwibW9udGgiOiJPQ1RPQkVSIiwiY2hyb25vbG9neSI6eyJjYWxlbmRhclR5cGUiOiJpc284NjAxIiwiaWQiOiJJU08ifSwiZXJhIjoiQ0UiLCJkYXlPZlllYXIiOjI5NCwiZGF5T2ZXZWVrIjoiTU9OREFZIiwibGVhcFllYXIiOmZhbHNlLCJkYXlPZk1vbnRoIjoyMSwibW9udGhWYWx1ZSI6MTB9LCJlTWFpbCI6InNlcnZpemlvLmlubm92YXppb25lZGlnaXRhbGVAcGVjLmNvbXVuZS50cmVudG8uaXQifQ.5Qp3GpZW2BdZ1jW6ePTIxRL-PRvDxXbvvL-KUsgnucI

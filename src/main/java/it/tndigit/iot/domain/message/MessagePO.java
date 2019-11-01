@@ -56,15 +56,17 @@ public class MessagePO extends DatePO {
     @NotNull
     private Integer timeToLive;
 
-
     @Column(name = "EMAIL")
     private String email;
 
     @OneToMany(mappedBy = "messagePO", fetch=FetchType.LAZY, cascade = CascadeType.ALL )
     private Set<NotificationPO> notificationPOS;
 
+    @Column(name = "ERROR_SEND", length = 1000)
+    private String errorSend;
 
-    @ManyToOne
+
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "IDPAGAMENTO")
     @Autowired
     private PaymentPO paymentPO;
@@ -156,6 +158,14 @@ public class MessagePO extends DatePO {
 
     public void setPaymentPO(PaymentPO paymentPO) {
         this.paymentPO = paymentPO;
+    }
+
+    public String getErrorSend() {
+        return errorSend;
+    }
+
+    public void setErrorSend(String errorSend) {
+        this.errorSend = errorSend;
     }
 
     @Override

@@ -2,7 +2,7 @@ package it.tndigit.iot.web.rest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping("/v1/api")
+@RequestMapping("/api/v1")
 public class AbstractResource {
 
 
