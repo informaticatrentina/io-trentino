@@ -1,3 +1,9 @@
 
+docker rmi tndigit/io-trentino
+mvn clean package
 docker build -t tndigit/io-trentino .
-docker run -p 8281:8281 tndigit/io-trentino
+#docker run -p 8281:8281 -e TEST_VAR='testing' --name IoApp tndigit/io-trentino:latest
+docker run -p 8281:8281 -e "SPRING_PROFILES_ACTIVE=dev" --name IoApp tndigit/io-trentino:latest
+
+
+-e "SPRING_PROFILES_ACTIVE=dev"

@@ -19,8 +19,8 @@ spring:
     name: iot
   jmx:
     default-domain: iot
-  profiles:
-    active: #activeProfile#
+#  profiles:
+#    active: #activeProfile#
 
   jackson:
     serialization.write_dates_as_timestamps: false
@@ -50,10 +50,6 @@ logging:
     org.springframework.security: ERROR
     it.tndigit: INFO
     it.tndigit.not.security: INFO
-application:
-  cron:
-    consuntivo:
-      change-state: ""
 
 server:
   servlet:

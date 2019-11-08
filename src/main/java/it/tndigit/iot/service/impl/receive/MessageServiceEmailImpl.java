@@ -54,9 +54,9 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
             mailMessage.setSubject(messageDTO.getOggetto());
             mailMessage.setText(messageDTO.getTesto());
             mailMessage.setFrom("io-trentino@tndigit.it");
-           // javaMailSender.send(mailMessage);
-//            this.createNotification(messageDTO);
-//            this.saveNotification(messageDTO);
+            javaMailSender.send(mailMessage);
+            this.createNotification(messageDTO);
+            this.saveNotification(messageDTO);
         }catch (Exception ex){
             log.error(ex.getMessage());
 

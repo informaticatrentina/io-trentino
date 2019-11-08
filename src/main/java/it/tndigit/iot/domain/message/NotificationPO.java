@@ -2,10 +2,8 @@ package it.tndigit.iot.domain.message;
 
 
 import it.tndigit.iot.domain.common.CommonPO;
-import it.tndigit.iot.domain.common.DatePO;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.stereotype.Component;
 

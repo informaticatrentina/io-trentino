@@ -57,20 +57,32 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
     @JmsListener(destination = "IO_ITALIA_QUEUE", containerFactory = "myFactory")
     public void receiveSendMessage(MessageDTO messageDTO) throws IotException, RestClientException {
 
+        Boolean errore= Boolean.FALSE;
+
         log.info(" RICEVUTO MESSAGGIO IO_ITALIA CON ID " + messageDTO.getIdObj());
         defaultApi.getApiClient().setApiKey(messageDTO.getServizioDTO().getTokenIoItalia());
-        LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
-        if (!limitedProfile.isSenderAllowed()){
-            messageDTO.setErroreImprevisto("Permesso negato");
-            throw new IotException("Impossibile mandare il messaggio, utente NON abilitato");
+        try{
+            LimitedProfile limitedProfile= defaultApi.getProfile(messageDTO.getCodiceFiscale());
+            if (!limitedProfile.isSenderAllowed()){
+                messageDTO.setErrorSend("Impossibile mandare il messaggio, utente NON abilitato");
+                errore=Boolean.TRUE;
+            }
+        }catch (RestClientException rce){
+            messageDTO.setErrorSend("Impossibile mandare il messaggio, utente NON abilitato");
+            errore=Boolean.TRUE;
         }
 
-        try{
-            InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
-            messageDTO.setExternID(inlineResponse201.getId());
-        }catch (Exception ex){
-            messageDTO.setErrorSend(ex.getMessage());
+
+
+        if (!errore){
+            try{
+                InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
+                messageDTO.setExternID(inlineResponse201.getId());
+            }catch (Exception ex){
+                messageDTO.setErrorSend(ex.getMessage());
+            }
         }
+
 
         Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
         if (messagePOCaricato.isPresent()){

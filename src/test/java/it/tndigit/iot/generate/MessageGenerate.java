@@ -1,9 +1,7 @@
 package it.tndigit.iot.generate;
 
 import it.tndigit.iot.costanti.TipoMessage;
-import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.message.MessagePO;
-import it.tndigit.iot.service.dto.ServizioDTO;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
