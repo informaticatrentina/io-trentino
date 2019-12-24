@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: ioApp
+  profiles: dev, devcom, test
+  cloud:
+    config:
+      uri: http://52.236.163.163:8888
+      env: default
+      label: master
+      password: mirko
+      username: mirko

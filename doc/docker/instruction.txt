@@ -7,3 +7,6 @@ docker run -p 8281:8281 -e "SPRING_PROFILES_ACTIVE=dev" --name IoApp tndigit/io-
 
 
 -e "SPRING_PROFILES_ACTIVE=dev"
+
+docker save -o   /tmp/ioApp.tar tndigit/io-trentino:latest
+docker load -i <path to image tar file>

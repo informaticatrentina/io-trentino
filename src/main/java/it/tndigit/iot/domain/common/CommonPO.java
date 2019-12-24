@@ -18,15 +18,6 @@
         protected Long idObj;
 
 
-        public CommonPO() {
-            super();
-        }
-
-        public CommonPO(Long idObj) {
-            super();
-            this.idObj = idObj;
-        }
-
         public Long getIdObj() {
             return idObj;
         }

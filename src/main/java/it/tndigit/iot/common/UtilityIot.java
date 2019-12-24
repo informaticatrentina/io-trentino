@@ -1,6 +1,6 @@
 package it.tndigit.iot.common;
 
-import it.tndigit.iot.web.util.JwtUser;
+import it.tndigit.iot.web.utils.JwtUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -21,7 +21,7 @@ public enum TipoRuoli {
 
     public static final String ADMIN = "ROLE_ADMIN";
     public static final String ENTE = "ROLE_ENTE";
-        public static final String JOB = "ROLE_JOB";
+    public static final String JOB = "ROLE_JOB";
     public static final String USERS = "ROLE_USERS";
 
 
@@ -54,32 +54,19 @@ public enum TipoRuoli {
             }
         }
         return listaRuoliApplicativi;
-
-
     }
 
     public String getNomeRuolo() {
         return nomeRuolo;
     }
 
-    public void setNomeRuolo(String nomeRuolo) {
-        this.nomeRuolo = nomeRuolo;
-    }
-
     public Long getLivello() {
         return livello;
-    }
-
-    public void setLivello(Long livello) {
-        this.livello = livello;
     }
 
     public String getDescrizione() {
         return descrizione;
     }
 
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
 
 }

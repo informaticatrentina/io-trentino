@@ -1,0 +1,6 @@
+
+mvn org.jacoco:jacoco-maven-plugin:0.8.5:prepare-agent clean package
+mvn sonar:sonar \
+  -Dsonar.projectKey=ioItalia \
+  -Dsonar.host.url=http://172.26.7.70:9000 \
+  -Dsonar.login=9398609d32188c206bb2c88cb7ab7c0b24086ed3

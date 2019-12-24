@@ -4,7 +4,7 @@ import io.jsonwebtoken.ExpiredJwtException;
 import it.tndigit.auth.web.controller.GestioneAuthApi;
 import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.repository.ServizioRepository;
-import it.tndigit.iot.web.util.JwtUser;
+import it.tndigit.iot.web.utils.JwtTokenUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,6 +36,9 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
 
 
     @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
     protected ServizioRepository servizioRepository;
 
 
@@ -56,29 +59,30 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
 
                 UserDetails userDetails = null;
 
-                if (authToken != null && authToken.isPresent()) {
-                    gestioneAuthApi.getApiClient().setBasePath(basePathAuth);
-                    String returnValue =  gestioneAuthApi.ctrTockenUsingGET(authToken.get()) ;
-                    if (returnValue!=null && !returnValue.isEmpty()){
-                        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                if (authToken.isPresent()) {
+                    userDetails = jwtTokenUtil.getUserDetails(authToken.get());
+
+                } else {
+                    throw new InvalidTokenException("TOKEN NON VALIDO");
+                }
+
+                if (userDetails != null) {
+                    // Ricostruisco l userdetails con i dati contenuti nel token
+                    // controllo integrita' token
+                    if (jwtTokenUtil.validateToken(authToken.get(), userDetails)) {
+
+                            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                        userDetails = new JwtUser(returnValue,"",authorities, true);
-                        Optional<ServizioPO> entePOOptional = servizioRepository.findByEmailPec(returnValue);
-                        if (entePOOptional.isPresent()){
+                        Optional<ServizioPO> servizioPOOptional = servizioRepository.findByEmailPec(userDetails.getUsername());
+                        if (servizioPOOptional.isPresent()){
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         }
-                    }else{
-                        String token = authToken.isPresent()?authToken.get():"NON VALIDATO";
-                        logger.error(token);
-                        throw new InvalidTokenException("TOKEN NON VALIDATO" + token);
 
                     }
-
                 } else {
-                    String token = authToken.isPresent()?authToken.get():"NON PRESENTE";
-                    throw new InvalidTokenException("TOKEN NON VALIDO" + token);
+                    throw new InvalidTokenException("TOKEN NON VALIDO" + authToken.get());
                 }
 
             }

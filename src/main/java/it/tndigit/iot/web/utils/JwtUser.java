@@ -1,4 +1,4 @@
-package it.tndigit.iot.web.util;
+package it.tndigit.iot.web.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;

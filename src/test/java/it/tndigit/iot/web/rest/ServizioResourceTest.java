@@ -95,17 +95,6 @@ public class ServizioResourceTest extends AbstractResourceTest{
     }
 
     @Test
-    public void getServizio()throws  Exception {
-
-
-
-    }
-
-    @Test
-    public void updateServizio()throws  Exception {
-    }
-
-    @Test
     public void deleteServizio()throws  Exception {
 
         ServizioPO servizioPODelete = servizioRepository.saveAndFlush(servizioGenerate.getObjectPO());
