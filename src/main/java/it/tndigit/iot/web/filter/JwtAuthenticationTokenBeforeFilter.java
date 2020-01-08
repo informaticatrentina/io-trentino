@@ -29,14 +29,13 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
     private static final String BEARER = "Bearer";
 
     @Value("${jwt.header}")
-    private String tokenHeader;
+    protected String tokenHeader;
 
     @Autowired
     protected GestioneAuthApi gestioneAuthApi;
 
-
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    protected JwtTokenUtil jwtTokenUtil;
 
     @Autowired
     protected ServizioRepository servizioRepository;
@@ -57,32 +56,23 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
                         .map(v -> v.replace("%20", "").trim())
                         .map(v -> v.replace("%2520", "").trim());
 
-                UserDetails userDetails = null;
-
                 if (authToken.isPresent()) {
-                    userDetails = jwtTokenUtil.getUserDetails(authToken.get());
-
-                } else {
-                    throw new InvalidTokenException("TOKEN NON VALIDO");
-                }
-
-                if (userDetails != null) {
-                    // Ricostruisco l userdetails con i dati contenuti nel token
-                    // controllo integrita' token
+                    UserDetails userDetails = jwtTokenUtil.getUserDetails(authToken.get());
                     if (jwtTokenUtil.validateToken(authToken.get(), userDetails)) {
-
-                            List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+                        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
                         Optional<ServizioPO> servizioPOOptional = servizioRepository.findByEmailPec(userDetails.getUsername());
+
                         if (servizioPOOptional.isPresent()){
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                             authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                             SecurityContextHolder.getContext().setAuthentication(authentication);
                         }
-
+                    }else {
+                        throw new InvalidTokenException("TOKEN NON VALIDO");
                     }
                 } else {
-                    throw new InvalidTokenException("TOKEN NON VALIDO" + authToken.get());
+                    throw new InvalidTokenException("TOKEN NON PRESENTE");
                 }
 
             }
@@ -105,7 +95,4 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
 
 
     }
-
-
-
 }

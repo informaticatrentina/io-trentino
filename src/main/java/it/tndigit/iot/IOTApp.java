@@ -1,5 +1,8 @@
 package it.tndigit.iot;
 
+import it.tndigit.iot.schedule.ScheduledTasks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
@@ -24,22 +27,13 @@ import java.util.Map;
 @ComponentScan({"it.tndigit.iot", "it.tndigit.ioitalia", "it.tndigit.auth"})
 public class IOTApp{
 
-
+    private final Logger log = LoggerFactory.getLogger(IOTApp.class);
 
     public static void main(String[] args) {
         SpringApplication.run(IOTApp.class, args);
 
-        //Read and print variable passed to the docker image
-//        Map<String, String> env = System.getenv();
-//        System.out.println("TEST_VAR: "+env.get("TEST_VAR"));
 
     }
-
-//    @Override
-//    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-//        return application.sources(IOTApp.class);
-//    }
-
     @Bean
     public FilterRegistrationBean oauth2ClientFilterRegistration(OAuth2ClientContextFilter filter) {
         FilterRegistrationBean registration = new FilterRegistrationBean();
@@ -47,7 +41,6 @@ public class IOTApp{
         registration.setOrder(-100);
         return registration;
     }
-
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
@@ -62,7 +55,13 @@ public class IOTApp{
         return new RestTemplate();
     }
 
+    @SuppressWarnings("squid:S00112")
+    private void printEnv(){
 
+        Map<String, String> env = System.getenv();
+        log.info("TEST_VAR: "+env.get("TEST_VAR"));
+
+    }
 
 
 }

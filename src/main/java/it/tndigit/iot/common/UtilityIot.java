@@ -26,6 +26,10 @@ public class UtilityIot {
 	 *
 	 */
 
+	private UtilityIot() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static String getUserName() {
 		try {
 			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

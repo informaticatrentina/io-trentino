@@ -28,6 +28,8 @@ import java.util.Optional;
 public class MessageServiceSendImpl implements MessageServiceSend {
     private final Logger log = LoggerFactory.getLogger(MessageServiceSendImpl.class);
 
+    private static String CODICEFISCALE= " codice fiscale ";
+
     @Autowired
     ApplicationContext applicationContext;
 
@@ -90,7 +92,7 @@ public class MessageServiceSendImpl implements MessageServiceSend {
     public Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException {
 
 
-        log.info("INIZIO elaborazione check per id " + idObj + ", codice fiscale "+ codiceFiscale);
+        log.info("INIZIO elaborazione check per id " + idObj + ", "+ CODICEFISCALE+  codiceFiscale);
 
 
         //Cerco il messaggio nella base dati
@@ -102,12 +104,12 @@ public class MessageServiceSendImpl implements MessageServiceSend {
             MessageServiceReceive messageService = (MessageServiceReceive) applicationContext.getBean(messagePO.get().getTipoMessage().getMessageService());
             messageDTO = messageService.getMessage(messageDTO);
 
-            log.info("FINE elaborazione check per id " + idObj + ", codice fiscale "+ codiceFiscale);
+            log.info("FINE elaborazione check per id " + idObj + "," + CODICEFISCALE + codiceFiscale);
             return Optional.of(messageDTO);
         }
 
 
-        log.info("IMPOSSIBILE elaborare check per id " + idObj + ", codice fiscale "+ codiceFiscale);
+        log.info("IMPOSSIBILE elaborare check per id " + idObj + ", " +CODICEFISCALE+ codiceFiscale);
         return Optional.empty();
 
     }

@@ -5,12 +5,10 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.List;
 
 @Component
 public class JwtTokenUtil {
@@ -23,7 +21,7 @@ public class JwtTokenUtil {
 
 
     @Autowired
-    private RSA rsa;
+    protected RSA rsa;
 
     public String getUsernameFromToken(String token) {
         String username = "";

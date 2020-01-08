@@ -20,7 +20,7 @@ public class ActiveMQConfig {
     public static final String IO_ITALIA_QUEUE = "IO_ITALIA_QUEUE";
 
     @Bean
-    public JmsListenerContainerFactory<?> myFactory(ConnectionFactory connectionFactory,
+    public JmsListenerContainerFactory myFactory(ConnectionFactory connectionFactory,
                                                     DefaultJmsListenerContainerFactoryConfigurer configurer) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         // This provides all boot's default to this factory, including the message converter
