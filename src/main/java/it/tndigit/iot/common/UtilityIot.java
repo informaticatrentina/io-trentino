@@ -49,37 +49,4 @@ public class UtilityIot {
 	}
 
 
-
-	/**
-	 *
-	 * @param String[] ruoloRichiesto
-	 * @return Boolean (True se ha trovato il ruolo, false se non lo ha trovato)
-	 *
-	 * Check application roles
-	 *
-	 */
-	@SuppressWarnings("unchecked")
-	public static Boolean hasRole(String[] ruoloRichiesto ) {
-
-		Collection<GrantedAuthority> authorities = (Collection<GrantedAuthority>) SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-		  boolean hasRole = false;
-
-		  for (GrantedAuthority authority : authorities) {
-		     for(String role : ruoloRichiesto){
-		    	 hasRole = authority.getAuthority().equals(role);
-		    	 if (hasRole) {
-			    	 break;
-			     }
-		     }
-		     if (hasRole) {
-		    	 break;
-		     }
-		  }
-		  return hasRole;
-		}
-
-
-
-
-
 }

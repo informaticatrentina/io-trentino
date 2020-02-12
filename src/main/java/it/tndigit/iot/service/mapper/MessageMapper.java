@@ -23,6 +23,7 @@ public interface MessageMapper extends EntityMapper<MessageDTO, MessagePO> {
     @Mapping(source = "notificationDTOS", target = "notificationPOS")
     @Mapping(source = "servizioDTO", target = "servizioPO")
     @Mapping(source = "paymentDTO", target = "paymentPO")
+    @Mapping(source = "scadenza", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSz", target = "scadenza")
     MessagePO toEntity(MessageDTO messageDTO);
 
 

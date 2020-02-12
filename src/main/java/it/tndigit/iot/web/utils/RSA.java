@@ -40,5 +40,9 @@ public class RSA {
         return (RSAPublicKey) kf.generatePublic(new X509EncodedKeySpec(encoded));
     }
 
+    protected void setClientHttpAuthService(ClientHttpAuthService clientHttpAuthService) {
+        this.clientHttpAuthService = clientHttpAuthService;
+    }
+
 
 }

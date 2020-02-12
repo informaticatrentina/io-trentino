@@ -49,7 +49,7 @@ public class MessageResource extends AbstractResource  {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/message/{codiceFiscale}")
-    @ApiOperation("Crea una nuova indicaotre nella politica nel sistema")
+    @ApiOperation("Crea un nuovo messaggio dato un codicefiscale")
     @LogExecutionTime
     public ResponseEntity<MessageDTO> createMessage(@Valid @RequestBody MessageDTO messageDTO,
                                                     @PathVariable String codiceFiscale,

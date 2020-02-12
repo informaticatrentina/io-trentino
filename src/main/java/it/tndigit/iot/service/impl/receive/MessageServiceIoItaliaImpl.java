@@ -19,6 +19,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -169,9 +170,9 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             newMessage.setTimeToLive(messageDTO.getTimeToLive());
 
             //Gestione scadenza Messaggio
-//        if (messageDTO.getScadenza()!=null){
-//            newMessage.getContent().setDueDate(Timestamp.valueOf(messageDTO.getScadenza()).toString());
-//        }
+            if (messageDTO.getScadenza()!=null){
+                newMessage.getContent().setDueDate(messageDTO.getScadenza());
+            }
 
             newMessage.getContent().setMarkdown(messageDTO.getTesto());
             newMessage.getContent().setSubject(messageDTO.getOggetto());

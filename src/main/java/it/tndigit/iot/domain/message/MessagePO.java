@@ -68,7 +68,6 @@ public class MessagePO extends DatePO {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "IDPAGAMENTO")
-    @Autowired
     private PaymentPO paymentPO;
 
 
@@ -171,8 +170,7 @@ public class MessagePO extends DatePO {
     @Override
     public String toString() {
         return "MessagePO{" +
-                "servizioPO=" + servizioPO +
-                ", codiceFiscale='" + codiceFiscale + '\'' +
+                "codiceFiscale='" + codiceFiscale + '\'' +
                 ", tipoMessage=" + tipoMessage +
                 ", externID='" + externID + '\'' +
                 ", oggetto='" + oggetto + '\'' +
@@ -181,6 +179,8 @@ public class MessagePO extends DatePO {
                 ", timeToLive=" + timeToLive +
                 ", email='" + email + '\'' +
                 ", notificationPOS=" + notificationPOS +
+                ", errorSend='" + errorSend + '\'' +
+                ", paymentPO=" + paymentPO +
                 ", idObj=" + idObj +
                 '}';
     }

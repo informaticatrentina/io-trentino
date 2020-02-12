@@ -29,6 +29,7 @@ public class MessageGenerate extends AbstractGenerate<MessagePO, MessageDTO> {
         po.setExternID(RandomStringUtils.randomAlphanumeric(10));
         po.setOggetto(RandomStringUtils.randomAlphanumeric(90));
         po.setTesto(RandomStringUtils.randomAlphanumeric(1000));
+        po.setTimeToLive(3600);
 
         return po;
     }

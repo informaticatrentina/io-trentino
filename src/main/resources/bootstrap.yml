@@ -4,7 +4,10 @@ spring:
   profiles: dev, devcom, test
   cloud:
     config:
-      uri: http://52.236.163.163:8888
+      #uri:
+
+
+      uri: ${CONFIG_URI}
       env: default
       label: master
       password: mirko

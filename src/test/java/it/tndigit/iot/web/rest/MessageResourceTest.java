@@ -38,6 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@Transactional
 public class MessageResourceTest extends AbstractResourceTest{
 
 
@@ -86,6 +87,7 @@ public class MessageResourceTest extends AbstractResourceTest{
 
     @Before
     public void initTest() {
+        servizioRepository.deleteAll();
         ServizioPO servizioPO = servizioGenerate.getObjectPO();
         servizioPO.setEmailPec("aaa@aaa.it");
         servizioRepository.saveAndFlush(servizioPO);
@@ -107,6 +109,7 @@ public class MessageResourceTest extends AbstractResourceTest{
     @WithMockUser(username = "aaa@aaa.it",roles = "USER")
     @Transactional
     public void createMessage() throws Exception {
+        messageRepository.deleteAll();
 
         MessagePO messagePO = messageGenerate.getObjectPO(new MessagePO());
 

@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
@@ -49,37 +50,41 @@ public class ServizioResource extends AbstractResource {
     /**
      * POST  /servizio : Create un nuovo Servizio.
      *
-     * @param ServizioDTO the ServizioDTO to create
+     * @param servizioDTO the ServizioDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new attoDTO, or with status 400 (Bad Request) if the area has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/servizio")
     @ApiOperation("Inserisce un nuovo Servizio")
     @LogExecutionTime
-    public ResponseEntity<ServizioDTO> createServizio(@RequestBody ServizioDTO ServizioDTO, BindingResult bindingResult) throws URISyntaxException {
-        if (ServizioDTO.getIdObj() != null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ServizioDTO> createServizio(@RequestBody ServizioDTO servizioDTO,
+                                                      BindingResult bindingResult,
+                                                      HttpServletResponse response){
+        if (servizioDTO.getIdObj() != null) {
+//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            servizioDTO.setErroreImprevisto("L'identificativo NON deve presente in fase di inseriento servizio");
+            return new ResponseEntity<>(servizioDTO, HttpStatus.NOT_ACCEPTABLE);
         }
 
-        servizioValidator.validate(ServizioDTO,bindingResult);
+        servizioValidator.validate(servizioDTO,bindingResult);
         if (bindingResult.getErrorCount()>0){
-            ServizioDTO.setErroreImprevisto(bindingResult.getAllErrors().get(0).toString());
-            return new ResponseEntity<>(ServizioDTO, HttpStatus.NOT_ACCEPTABLE);
+            servizioDTO.setErroreImprevisto(bindingResult.getAllErrors().get(0).toString());
+            return new ResponseEntity<>(servizioDTO, HttpStatus.NOT_ACCEPTABLE);
         }
 
         try{
-            ServizioDTO result = servizioService.save(ServizioDTO);
+            ServizioDTO result = servizioService.save(servizioDTO);
             return ResponseEntity.created(new URI("/v1/api/servizio/" + result.getIdObj()))
                     .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getIdObj().toString()))
                     .body(result);
         }catch (IotException e){
-            ServizioDTO.setErroreImprevisto(e.getMessage());
-            return new ResponseEntity<>(ServizioDTO, HttpStatus.UNPROCESSABLE_ENTITY);
+            servizioDTO.setErroreImprevisto(e.getMessage());
+            return new ResponseEntity<>(servizioDTO, HttpStatus.UNPROCESSABLE_ENTITY);
         }catch (AccessDeniedException ex){
-            return new ResponseEntity<>(ServizioDTO, HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(servizioDTO, HttpStatus.FORBIDDEN);
         }
         catch (Exception ex){
-            return new ResponseEntity<>(ServizioDTO, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(servizioDTO, HttpStatus.NOT_ACCEPTABLE);
 
         }
     }
