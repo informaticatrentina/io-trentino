@@ -20,9 +20,7 @@ import java.util.Optional;
 
 @RestController
 @Api( value="API MESSAGGI",
-        description="Gestione di invio massaggi",
-        tags = "GESTIONE MESSAGGI",
-        position = 1)
+        tags = "GESTIONE MESSAGGI")
 public class MessageResource extends AbstractResource  {
 
 

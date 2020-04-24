@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "application.protocollo",
+      "type": "java.lang.String",
+      "description": "Description for application.protocollo."
+  }
+] }

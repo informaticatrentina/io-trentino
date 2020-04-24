@@ -8,7 +8,10 @@ import it.tndigit.iot.service.mapper.ServizioMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Optional;
 
 @Service
@@ -26,9 +29,14 @@ public class ServizioServiceImpl implements ServizioService {
 
     @Override
     public ServizioDTO save(ServizioDTO enteDTO) {
-        ServizioPO areaPO = enteMapper.toEntity(enteDTO);
-        areaPO = servizioRepository.save(areaPO);
-        return enteMapper.toDto(areaPO);
+        ServizioPO servizioPO = enteMapper.toEntity(enteDTO);
+        if (servizioPO.getIdObj()==null && (enteDTO.getCodiceIdentificativo()==null || enteDTO.getCodiceIdentificativo().isEmpty())){
+            String digestString = enteDTO.getNomeServizio() + LocalDate.now().toString();
+            servizioPO.setCodiceIdentificativo(Arrays.toString(DigestUtils.md5Digest(digestString.getBytes()))) ;
+
+        }
+        servizioPO = servizioRepository.save(servizioPO);
+        return enteMapper.toDto(servizioPO);
 
 
     }

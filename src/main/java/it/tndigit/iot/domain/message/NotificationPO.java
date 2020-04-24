@@ -1,7 +1,9 @@
 package it.tndigit.iot.domain.message;
 
 
+import it.tndigit.iot.costanti.TipoStatus;
 import it.tndigit.iot.domain.common.CommonPO;
+import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Table(name = "IOTTNOTIFICATION")
@@ -16,6 +19,7 @@ import java.time.LocalDateTime;
 @EntityListeners({ AuditingEntityListener.class })
 @Component
 @Scope("prototype")
+@Data
 public class NotificationPO extends CommonPO {
     private static final long serialVersionUID = -8978926117208941821L;
 
@@ -24,13 +28,16 @@ public class NotificationPO extends CommonPO {
     private MessagePO messagePO;
 
     @Column(name = "EMAIL_NOTIFICATION")
-    private String emailNotification;
+    @Enumerated(EnumType.STRING)
+    private TipoStatus emailNotification;
 
     @Column(name = "WEBHOOD_NOTIFICATION")
-    private String webhookNotification;
+    @Enumerated(EnumType.STRING)
+    private TipoStatus webhookNotification;
 
     @Column(name = "STATUS")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private TipoStatus status;
 
     @CreatedDate
     @Column(name = "DATAINSERIMENTO", insertable = true, updatable = false)
@@ -44,61 +51,4 @@ public class NotificationPO extends CommonPO {
     private String note;
 
 
-
-    public MessagePO getMessagePO() {
-        return messagePO;
-    }
-
-    public void setMessagePO(MessagePO messagePO) {
-        this.messagePO = messagePO;
-    }
-
-
-    public String getEmailNotification() {
-        return emailNotification;
-    }
-
-    public void setEmailNotification(String emailNotification) {
-        this.emailNotification = emailNotification;
-    }
-
-    public String getWebhookNotification() {
-        return webhookNotification;
-    }
-
-    public void setWebhookNotification(String webhookNotification) {
-        this.webhookNotification = webhookNotification;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getDataInserimento() {
-        return dataInserimento;
-    }
-
-    public void setDataInserimento(LocalDateTime dataInserimento) {
-        this.dataInserimento = dataInserimento;
-    }
-
-    public LocalDateTime getLastChance() {
-        return lastChance;
-    }
-
-    public void setLastChance(LocalDateTime lastChance) {
-        this.lastChance = lastChance;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public void setNote(String note) {
-        this.note = note;
-    }
 }

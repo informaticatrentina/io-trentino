@@ -26,8 +26,8 @@ spring:
 
   datasource:
     platform: h2
-    #url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
-    url: jdbc:h2:file:/tmp/h2/opv;DB_CLOSE_ON_EXIT=FALSE
+    url: jdbc:h2:mem:db;DB_CLOSE_DELAY=-1
+    #url: jdbc:h2:file:/tmp/h2/opv;DB_CLOSE_ON_EXIT=FALSE
     #url: jdbc:h2:./target/db/opv;AUTO_SERVER=TRUE
     username: sa
     password: sa
@@ -53,8 +53,20 @@ server:
     auth: http://localhost:8182/auth
 
 
+iot:
+  cron:
+    fixedDelay: 60000
+    enable: false
+  crypt:
+    secretKey: ICmpuCr4PGYJ2nsKqp3y
+    salt: RrPdwdiAsDAOqJdDHSO7
+
 jwt:
   header: Authorization
 
 application:
-  protocollo: http
+  io-app:
+    rabbitmq:
+      exchange: ioapp.exchange
+      queue: ioapp.queue
+      routingkey: ioapp.routingkey

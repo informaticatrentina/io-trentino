@@ -12,20 +12,10 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring")
 public interface PaymentMapper extends EntityMapper<PaymentDTO, PaymentPO> {
 
-
     @Mapping(source = "idObj", target = "idObj")
     PaymentDTO toDto(PaymentPO paymentPO);
 
     @Mapping(source = "idObj", target = "idObj")
     PaymentPO toEntity(PaymentDTO paymentDTO);
 
-
-    default PaymentPO fromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        PaymentPO paymentPO = new PaymentPO();
-        paymentPO.setIdObj(id);
-        return paymentPO;
-    }
 }

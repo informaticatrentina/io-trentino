@@ -1,18 +1,19 @@
 package it.tndigit.iot.domain;
 
 import it.tndigit.iot.domain.common.DatePO;
+import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
-
 @Entity
-@Table(name = "IOTTSERVIZIO")
+@Table(name = "IOTTSERVIZIO", uniqueConstraints = @UniqueConstraint(name = "codIdPK", columnNames= { "COD_IDENTIFICATIVO"} ))
 @Inheritance(strategy = InheritanceType.JOINED)
 @Component
 @Scope("prototype")
+@Data
 public class ServizioPO extends DatePO {
 
     @NotNull
@@ -45,82 +46,9 @@ public class ServizioPO extends DatePO {
     @Column(name = "TOKEN")
     private String tokenIoItalia;
 
-    public String getNomeEnte() {
-        return nomeEnte;
-    }
+    @NotNull
+    @Column(name = "COD_IDENTIFICATIVO")
+    private String codiceIdentificativo;
 
-    public void setNomeEnte(String nomeEnte) {
-        this.nomeEnte = nomeEnte;
-    }
 
-    public String getNomeDipartimento() {
-        return nomeDipartimento;
-    }
-
-    public void setNomeDipartimento(String nomeDipartimento) {
-        this.nomeDipartimento = nomeDipartimento;
-    }
-
-    public String getNomeServizio() {
-        return nomeServizio;
-    }
-
-    public void setNomeServizio(String nomeServizio) {
-        this.nomeServizio = nomeServizio;
-    }
-
-    public String getCodiceServizioIoItalia() {
-        return codiceServizioIoItalia;
-    }
-
-    public void setCodiceServizioIoItalia(String codiceServizioIoItalia) {
-        this.codiceServizioIoItalia = codiceServizioIoItalia;
-    }
-
-    public String getCodiceFiscale() {
-        return codiceFiscale;
-    }
-
-    public void setCodiceFiscale(String codiceFiscale) {
-        this.codiceFiscale = codiceFiscale;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getEmailPec() {
-        return emailPec;
-    }
-
-    public void setEmailPec(String emailPec) {
-        this.emailPec = emailPec;
-    }
-
-    public String getTokenIoItalia() {
-        return tokenIoItalia;
-    }
-
-    public void setTokenIoItalia(String tokenIoItalia) {
-        this.tokenIoItalia = tokenIoItalia;
-    }
-
-    @Override
-    public String toString() {
-        return "ServizioPO{" +
-                "nomeEnte='" + nomeEnte + '\'' +
-                ", nomeDipartimento='" + nomeDipartimento + '\'' +
-                ", nomeServizio='" + nomeServizio + '\'' +
-                ", codiceServizioIoItalia='" + codiceServizioIoItalia + '\'' +
-                ", codiceFiscale='" + codiceFiscale + '\'' +
-                ", email='" + email + '\'' +
-                ", emailPec='" + emailPec + '\'' +
-                ", tokenIoItalia='" + tokenIoItalia + '\'' +
-                ", idObj=" + idObj +
-                '}';
-    }
 }

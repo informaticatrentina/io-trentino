@@ -1,5 +1,6 @@
 package it.tndigit.iot.domain.common;
 
+import lombok.Data;
 import org.hibernate.envers.Audited;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
@@ -15,12 +16,9 @@ import java.time.LocalDateTime;
 
 @EntityListeners({AuditingEntityListener.class})
 @MappedSuperclass
-@Audited
+@Data
 public abstract class DatePO extends CommonPO{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 3423266755397048452L;
 	
 	@CreatedDate
@@ -39,37 +37,6 @@ public abstract class DatePO extends CommonPO{
 	@Column(name = "UTENTEMODIFICA", length = 100)
 	private String utenteModifica;
 
-
-	@Column(name = "VERSION")
-	@Version
-	private Integer version;
-
-
-	public LocalDateTime getDataInserimento() {
-		return dataInserimento;
-	}
-
-	public String getUtenteInserimento() {
-		return utenteInserimento;
-	}
-
-	public LocalDateTime getDataModifica() {
-		return dataModifica;
-	}
-
-
-	public String getUtenteModifica() {
-		return utenteModifica;
-	}
-
-
-	public Integer getVersion() {
-		return version;
-	}
-
-	public void setVersion(Integer version) {
-		this.version = version;
-	}
 
 
 }

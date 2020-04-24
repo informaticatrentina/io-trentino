@@ -29,7 +29,7 @@ public class ServizioGenerate extends AbstractGenerate<ServizioPO, ServizioDTO> 
         po.setNomeServizio(RandomStringUtils.randomAlphabetic(200));
         po.setNomeDipartimento(RandomStringUtils.randomAlphabetic(200));
         po.setTokenIoItalia(RandomStringUtils.randomAlphabetic(100));
-
+        po.setCodiceIdentificativo(RandomStringUtils.randomAlphabetic(100));
 
         return po;
     }

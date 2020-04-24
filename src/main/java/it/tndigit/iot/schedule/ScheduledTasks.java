@@ -35,14 +35,14 @@ public class ScheduledTasks {
         AuthenticationUtil.configureAuthentication(TipoRuoli.JOB);
         log.info(" - Schedulazione cron partita alle ore " + LocalDateTime.now());
 
-        messageRepository.findByTipoMessageAndExternIDNotNull(TipoMessage.IO_ITALIA)
+        messageRepository.findMessageForCheck()
                 .stream()
                 .peek(messagePO ->log.info("Elaborazione messaggio con id" + messagePO.getIdObj()))
                 .forEach(messagePO ->{
                     messageService.checkMessage(messagePO.getIdObj(), messagePO.getCodiceFiscale());
                 });
 
-        log.info("Check effettuati");
+        log.info("Effettuati numero " + messageRepository.findMessageForCheck().size() + " check");
         AuthenticationUtil.clearAuthentication();
 
     }

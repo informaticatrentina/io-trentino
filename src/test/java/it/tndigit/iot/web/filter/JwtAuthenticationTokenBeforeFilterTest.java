@@ -3,17 +3,14 @@ package it.tndigit.iot.web.filter;
 
 import it.tndigit.iot.web.utils.JwtTokenUtil;
 import it.tndigit.iot.web.utils.JwtUser;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.ServletException;
@@ -24,7 +21,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-@RunWith(SpringRunner.class)
 @SpringBootTest
 public class JwtAuthenticationTokenBeforeFilterTest {
 
@@ -38,7 +34,7 @@ public class JwtAuthenticationTokenBeforeFilterTest {
     private JwtAuthenticationTokenBeforeFilter accessFilter;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
 
         this.request = new MockHttpServletRequest();

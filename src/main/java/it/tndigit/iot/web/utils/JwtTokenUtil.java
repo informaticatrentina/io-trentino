@@ -23,7 +23,7 @@ public class JwtTokenUtil {
     @Autowired
     protected RSA rsa;
 
-    public String getUsernameFromToken(String token) {
+    public String   getUsernameFromToken(String token) {
         String username = "";
         try {
             final Claims claims = getClaimsFromToken(token);

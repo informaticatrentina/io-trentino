@@ -22,12 +22,4 @@ public interface NotificationMapper extends EntityMapper<NotificationDTO, Notifi
     NotificationPO toEntity(NotificationDTO notificationDTO);
 
 
-    default NotificationPO fromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        NotificationPO notificationPO = new NotificationPO();
-        notificationPO.setIdObj(id);
-        return notificationPO;
-    }
 }

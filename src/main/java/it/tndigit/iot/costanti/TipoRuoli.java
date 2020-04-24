@@ -45,17 +45,6 @@ public enum TipoRuoli {
         return null;
     }
 
-    public static List<TipoRuoli> getListaRuoliApp(){
-        List<TipoRuoli> listaRuoliApplicativi = new ArrayList<>();
-
-        for (TipoRuoli tipoRuoli : TipoRuoli.values()) {
-            if (tipoRuoli.getLivello().equals(1L)|| (tipoRuoli.getLivello()>=30 && tipoRuoli.getLivello()<=50)) {
-                listaRuoliApplicativi.add(tipoRuoli);
-            }
-        }
-        return listaRuoliApplicativi;
-    }
-
     public String getNomeRuolo() {
         return nomeRuolo;
     }

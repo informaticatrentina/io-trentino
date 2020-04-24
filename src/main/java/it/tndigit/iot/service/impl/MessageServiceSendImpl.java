@@ -1,6 +1,8 @@
 package it.tndigit.iot.service.impl;
 
+import it.tndigit.iot.common.UtilityCrypt;
 import it.tndigit.iot.common.UtilityIot;
+import it.tndigit.iot.costanti.TipoCryptoMessage;
 import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.exception.IotException;
@@ -14,9 +16,9 @@ import it.tndigit.iot.service.mapper.MessageMapper;
 import it.tndigit.iot.service.mapper.ServizioMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,8 +48,10 @@ public class MessageServiceSendImpl implements MessageServiceSend {
     private ServizioMapper enteMapper;
 
     @Autowired
-    private JmsTemplate jmsMessagingTemplate;
+    private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private UtilityCrypt utilityCrypt;
 
     protected Optional<ServizioDTO> getServizio(){
 
@@ -79,13 +83,23 @@ public class MessageServiceSendImpl implements MessageServiceSend {
         messagePO = messageRepository.saveAndFlush(messagePO);
         messageDTO = messageMapper.toDto(messagePO);
 
-        jmsMessagingTemplate.convertAndSend(messageDTO.getTipoMessage().name() + "_QUEUE", messageDTO );
+        rabbitTemplate.convertAndSend(messageDTO.getTipoMessage().name() + "_QUEUE", messageDTO );
+
+
+        try{
+            if (messageDTO.getTipoCryptoMessage().equals(TipoCryptoMessage.CRYPTO)){
+                //Persisto i dati in modo cryptato
+                messagePO.setTesto(utilityCrypt.encrypt(messagePO.getTesto()));
+                messagePO.setOggetto(utilityCrypt.encrypt(messagePO.getOggetto()));
+                messageRepository.saveAndFlush(messagePO);
+            }
+        }catch (Exception ex){
+            log.error("Impossile salvare il messaggio cryptato " + ex.getMessage());
+        }
+
 
         return messageDTO;
     }
-
-
-
 
 
     @Override

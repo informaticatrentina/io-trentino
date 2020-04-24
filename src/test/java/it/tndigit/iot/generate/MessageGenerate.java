@@ -1,5 +1,6 @@
 package it.tndigit.iot.generate;
 
+import it.tndigit.iot.costanti.TipoCryptoMessage;
 import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.service.dto.message.MessageDTO;
@@ -26,6 +27,7 @@ public class MessageGenerate extends AbstractGenerate<MessagePO, MessageDTO> {
         po.setCodiceFiscale(RandomStringUtils.randomAlphabetic(16));
         po.setEmail(RandomStringUtils.randomAlphanumeric(10));
         po.setTipoMessage(TipoMessage.IO_ITALIA);
+        po.setTipoCryptoMessage(TipoCryptoMessage.NO_CRYPTO);
         po.setExternID(RandomStringUtils.randomAlphanumeric(10));
         po.setOggetto(RandomStringUtils.randomAlphanumeric(90));
         po.setTesto(RandomStringUtils.randomAlphanumeric(1000));

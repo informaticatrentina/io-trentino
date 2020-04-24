@@ -2,6 +2,7 @@ package it.tndigit.iot.service.impl.receive;
 
 import it.tndigit.ioitalia.service.dto.*;
 import it.tndigit.ioitalia.web.rest.DefaultApi;
+import it.tndigit.iot.costanti.TipoStatus;
 import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.domain.message.NotificationPO;
 import it.tndigit.iot.exception.IotException;
@@ -13,13 +14,12 @@ import it.tndigit.iot.service.impl.MessageServiceAbstract;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Optional;
@@ -55,8 +55,8 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 
     }
 
-    @JmsListener(destination = "IO_ITALIA_QUEUE", containerFactory = "myFactory")
-    public void receiveSendMessage(MessageDTO messageDTO) throws IotException, RestClientException {
+    @RabbitListener(queues = "IO_ITALIA_QUEUE" )
+    public void receiveSendMessage(MessageDTO messageDTO)  {
 
         Boolean errore= Boolean.FALSE;
 
@@ -90,17 +90,13 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             MessagePO messagePO = messagePOCaricato.get();
             messagePO.setExternID(messageDTO.getExternID());
             messagePO.setErrorSend(messageDTO.getErrorSend());
-            messagePO = messageRepository.saveAndFlush(messagePO);
-            messageDTO = messageMapper.toDto(messagePO);
-
+            messageRepository.saveAndFlush(messagePO);
         }
-
-
     }
 
 
     @Override
-    public MessageDTO getMessage(MessageDTO messageDTO) throws IotException {
+    public MessageDTO getMessage(MessageDTO messageDTO) {
         defaultApi.getApiClient().setApiKey(messageDTO.getServizioDTO().getTokenIoItalia());
         MessageResponseWithContent messageResponseWithContent= defaultApi.getMessage(messageDTO.getCodiceFiscale() , messageDTO.getExternID());
         this.convertNotification(messageResponseWithContent,messageDTO);
@@ -156,7 +152,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
      *
      */
 
-    private NewMessage convertMessage(MessageDTO messageDTO) throws IotException{
+    private NewMessage convertMessage(MessageDTO messageDTO) {
 
         try {
             NewMessage newMessage =new NewMessage();
@@ -165,10 +161,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
 
             PaymentData paymentData = new PaymentData();
             newMessage.setContent(messageContent);
-            //newMessage.setFiscalCode(messageDTO.getCodiceFiscale());
-            //newMessage.setDefaultAddresses(newMessageDefaultAddresses);
             newMessage.setTimeToLive(messageDTO.getTimeToLive());
-
             //Gestione scadenza Messaggio
             if (messageDTO.getScadenza()!=null){
                 newMessage.getContent().setDueDate(messageDTO.getScadenza());
@@ -178,14 +171,12 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             newMessage.getContent().setSubject(messageDTO.getOggetto());
 
             if (messageDTO.getPaymentDTO() != null && messageDTO.getPaymentDTO().getIdObj()!=null){
-                //TODO: Mirko, da gestire tutti  i pagamenti
-                //newMessage.getContent()
+                newMessage.getContent().setPaymentData(paymentData);
+                newMessage.getContent().getPaymentData().setInvalidAfterDueDate(messageDTO.getPaymentDTO().getInvalid_after_due_date());
+                newMessage.getContent().getPaymentData().setAmount(messageDTO.getPaymentDTO().getImporto());
+                newMessage.getContent().getPaymentData().setNoticeNumber(messageDTO.getPaymentDTO().getNumeroAvviso());
 
             }
-
-            //newMessage.getContent().setPaymentData(paymentData);
-            //newMessage.getDefaultAddresses().setEmail(messageDTO.getEmail());
-
 
             return  newMessage;
         } catch (IotException ex) {
@@ -197,9 +188,7 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
                     Thread.currentThread().getStackTrace()[1].getMethodName(), null);
             throw (iotException);
         }
-
     }
-
 
     private void convertNotification(MessageResponseWithContent messageResponseWithContent, MessageDTO messageDTO)throws IotException{
         if (log.isDebugEnabled()){
@@ -207,11 +196,15 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
         }
         NotificationDTO notificationDTO = applicationContext.getBean(NotificationDTO.class);
         notificationDTO.setMessageDTO(messageDTO);
-        if (messageResponseWithContent.getNotification()!=null){
-            notificationDTO.setEmailNotification(messageResponseWithContent.getNotification().getEmail());
+        if (messageResponseWithContent.getNotification()!=null && messageResponseWithContent.getNotification().getEmail()!=null){
+            notificationDTO.setEmailNotification(TipoStatus.valueOf(messageResponseWithContent.getNotification().getEmail()));
         }
-        notificationDTO.setWebhookNotification(messageResponseWithContent.getNotification().getWebhook());
-        notificationDTO.setStatus(messageResponseWithContent.getStatus());
+
+        if (messageResponseWithContent.getNotification()!=null && messageResponseWithContent.getNotification().getWebhook()!=null){
+            notificationDTO.setWebhookNotification(TipoStatus.valueOf(messageResponseWithContent.getNotification().getWebhook()));
+        }
+
+        notificationDTO.setStatus(TipoStatus.valueOf(messageResponseWithContent.getStatus()));
         notificationDTO.setLastChance(LocalDateTime.now());
         notificationDTO.setNote(" -- Check effettuato il " + LocalDateTime.now().toString() + " n ");
 

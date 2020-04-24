@@ -20,12 +20,4 @@ public interface ServizioMapper extends EntityMapper<ServizioDTO, ServizioPO> {
     ServizioPO toEntity(ServizioDTO enteDTO);
 
 
-    default ServizioPO fromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        ServizioPO servizioPO = new ServizioPO();
-        servizioPO.setIdObj(id);
-        return servizioPO;
-    }
 }

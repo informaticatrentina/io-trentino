@@ -15,16 +15,15 @@ import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import it.tndigit.iot.web.validator.MessageValidator;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,8 +35,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest()
+@DisplayName( "Gestione Invio Messaggi")
 @Transactional
 public class MessageResourceTest extends AbstractResourceTest{
 
@@ -69,11 +68,11 @@ public class MessageResourceTest extends AbstractResourceTest{
 
     MockMvc restMessageMockMvc;
 
-
+    @Autowired
     ServizioPO servizioPO;
 
 
-    @Before
+    @BeforeEach
     public void setup() {
         MockitoAnnotations.initMocks(this);
         final MessageResource messageResource = new MessageResource(messageValidator,messageService);
@@ -85,7 +84,7 @@ public class MessageResourceTest extends AbstractResourceTest{
     }
 
 
-    @Before
+    @BeforeEach
     public void initTest() {
         servizioRepository.deleteAll();
         ServizioPO servizioPO = servizioGenerate.getObjectPO();
@@ -133,6 +132,7 @@ public class MessageResourceTest extends AbstractResourceTest{
         assertThat(testMessage.getExternID()).isEqualTo(messagePO.getExternID());
         assertThat(testMessage.getOggetto()).isEqualTo(messagePO.getOggetto());
         assertThat(testMessage.getTesto()).isEqualTo(messagePO.getTesto());
+        assertThat(testMessage.getTipoCryptoMessage()).isEqualTo(messagePO.getTipoCryptoMessage());
     }
 
 

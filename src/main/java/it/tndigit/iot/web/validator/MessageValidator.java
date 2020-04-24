@@ -28,7 +28,16 @@ public class MessageValidator implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "testo", "messages.testo.empty");
 
 
-        //Effettuo la validazione della lunghezza dei campi
+        /**
+         * TODO: Mirko
+         *
+         * Effettuare la validazione sul tipo di messaggio
+         * Se il messaggio è di tipo Email controllo se è presente la mail
+         * Se il messaggio è di tipo Telegram controllo se è presente il numero di telefono
+         *
+         */
+
+
 
     }
 

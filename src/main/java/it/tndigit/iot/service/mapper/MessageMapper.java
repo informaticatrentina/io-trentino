@@ -26,13 +26,4 @@ public interface MessageMapper extends EntityMapper<MessageDTO, MessagePO> {
     @Mapping(source = "scadenza", dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSz", target = "scadenza")
     MessagePO toEntity(MessageDTO messageDTO);
 
-
-    default MessagePO fromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        MessagePO messagePO = new MessagePO();
-        messagePO.setIdObj(id);
-        return messagePO;
-    }
 }

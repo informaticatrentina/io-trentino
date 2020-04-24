@@ -1,8 +1,10 @@
 package it.tndigit.iot.domain.message;
 
+import it.tndigit.iot.costanti.TipoCryptoMessage;
 import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.common.DatePO;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -20,6 +22,7 @@ import java.util.Set;
 @EntityListeners({ AuditingEntityListener.class })
 @Component
 @Scope("prototype")
+@Data
 public class MessagePO extends DatePO {
 
 
@@ -35,6 +38,11 @@ public class MessagePO extends DatePO {
     @Column(name = "TIPOMESSAGGIO")
     @NotNull
     private TipoMessage tipoMessage;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "TIPOCRYPTO")
+    @NotNull
+    private TipoCryptoMessage tipoCryptoMessage;
 
     @Column(name = "IDEXTERNAL")
     private String externID;
@@ -59,6 +67,10 @@ public class MessagePO extends DatePO {
     @Column(name = "EMAIL")
     private String email;
 
+    @Column(name = "TELEFONO")
+    private String telefono;
+
+
     @OneToMany(mappedBy = "messagePO", fetch=FetchType.LAZY, cascade = CascadeType.ALL )
     private Set<NotificationPO> notificationPOS;
 
@@ -71,117 +83,4 @@ public class MessagePO extends DatePO {
     private PaymentPO paymentPO;
 
 
-    public ServizioPO getServizioPO() {
-        return servizioPO;
-    }
-
-    public void setServizioPO(ServizioPO servizioPO) {
-        this.servizioPO = servizioPO;
-    }
-
-    public String getCodiceFiscale() {
-        return codiceFiscale;
-    }
-
-    public void setCodiceFiscale(String codiceFiscale) {
-        this.codiceFiscale = codiceFiscale;
-    }
-
-    public TipoMessage getTipoMessage() {
-        return tipoMessage;
-    }
-
-    public void setTipoMessage(TipoMessage tipoMessage) {
-        this.tipoMessage = tipoMessage;
-    }
-
-    public String getExternID() {
-        return externID;
-    }
-
-    public void setExternID(String externID) {
-        this.externID = externID;
-    }
-
-    public String getOggetto() {
-        return oggetto;
-    }
-
-    public void setOggetto(String oggetto) {
-        this.oggetto = oggetto;
-    }
-
-    public String getTesto() {
-        return testo;
-    }
-
-    public void setTesto(String testo) {
-        this.testo = testo;
-    }
-
-    public LocalDateTime getScadenza() {
-        return scadenza;
-    }
-
-    public void setScadenza(LocalDateTime scadenza) {
-        this.scadenza = scadenza;
-    }
-
-    public Integer getTimeToLive() {
-        return timeToLive;
-    }
-
-    public void setTimeToLive(Integer timeToLive) {
-        this.timeToLive = timeToLive;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Set<NotificationPO> getNotificationPOS() {
-        return notificationPOS;
-    }
-
-    public void setNotificationPOS(Set<NotificationPO> notificationPOS) {
-        this.notificationPOS = notificationPOS;
-    }
-
-    public PaymentPO getPaymentPO() {
-        return paymentPO;
-    }
-
-    public void setPaymentPO(PaymentPO paymentPO) {
-        this.paymentPO = paymentPO;
-    }
-
-    public String getErrorSend() {
-        return errorSend;
-    }
-
-    public void setErrorSend(String errorSend) {
-        this.errorSend = errorSend;
-    }
-
-    @Override
-    public String toString() {
-        return "MessagePO{" +
-                "codiceFiscale='" + codiceFiscale + '\'' +
-                ", tipoMessage=" + tipoMessage +
-                ", externID='" + externID + '\'' +
-                ", oggetto='" + oggetto + '\'' +
-                ", testo='" + testo + '\'' +
-                ", scadenza=" + scadenza +
-                ", timeToLive=" + timeToLive +
-                ", email='" + email + '\'' +
-                ", notificationPOS=" + notificationPOS +
-                ", errorSend='" + errorSend + '\'' +
-                ", paymentPO=" + paymentPO +
-                ", idObj=" + idObj +
-                '}';
-    }
 }
