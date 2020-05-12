@@ -12,13 +12,13 @@
 
     <groupId>it.tndigit</groupId>
     <artifactId>io-trentino</artifactId>
-    <version>0.5.0</version>
+    <version>0.6.0</version>
     <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>13</maven.compiler.source>
+        <maven.compiler.target>13</maven.compiler.target>
         <spring-cloud.version>Greenwich.RELEASE</spring-cloud.version>
         <org.mapstruct.version>1.3.0.Final</org.mapstruct.version>
         <it.infotn.ioitalia>1.0.0</it.infotn.ioitalia>
@@ -27,6 +27,7 @@
         <commons.io>2.6</commons.io>
         <xalan>2.7.2</xalan>
         <org.apache.maven.plugins>3.8.1</org.apache.maven.plugins>
+        <openapi.version>1.3.4</openapi.version>
         <io.jsonwebtoken>0.9.0</io.jsonwebtoken>
         <docker.image.prefix>tndigit</docker.image.prefix>
     </properties>
@@ -42,6 +43,7 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
 
     <dependencies>
         <dependency>
@@ -74,6 +76,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-config -->
@@ -115,12 +122,12 @@
             <groupId>org.springframework.security.oauth.boot</groupId>
             <artifactId>spring-security-oauth2-autoconfigure</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
-            <scope>test</scope>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.apache.commons</groupId>-->
+<!--            <artifactId>commons-lang3</artifactId>-->
+<!--            <version>3.9</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -133,6 +140,19 @@
             <artifactId>mapstruct</artifactId>
             <version>${org.mapstruct.version}</version>
         </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.metrics/spring-metrics &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/io.prometheus/simpleclient_common -->
+<!--        <dependency>-->
+<!--            <groupId>io.prometheus</groupId>-->
+<!--            <artifactId>simpleclient_common</artifactId>-->
+<!--            <version>0.8.1</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>it.tndigit.iot</groupId>
@@ -177,6 +197,7 @@
             <version>2.2</version>
             <scope>runtime</scope>
         </dependency>
+
         <!--Gestione SWAGGER-->
         <dependency>
             <groupId>io.springfox</groupId>
@@ -191,8 +212,14 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.10</version>
+        </dependency>
 
-        <!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
+
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
@@ -342,8 +369,8 @@
     <repositories>
 
         <repository>
-            <id>infotn</id>
-            <url>https://maven.infotn.it/nexus/repository/public</url>
+            <id>tndigit</id>
+            <url>https://maven.tndigit.it/repository/repo_tndigit</url>
         </repository>
 
         <repository>
@@ -388,6 +415,7 @@
                                             <filtering>true</filtering>
                                             <includes>
                                                 <include>**/*.xml</include>
+                                                <include>swagger-config.yaml</include>
                                                 <include>bootstrap.yml</include>
                                                 <include>messages.properties</include>
                                             </includes>

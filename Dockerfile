@@ -1,7 +1,7 @@
 # Start with a base image containing Java runtime
 FROM openjdk:8-jdk-alpine
 RUN echo "Build image IO-ITALIA"
-CMD echo "Hello"
+CMD echo "Middleware IO Trentino"
 
 
 # Add Maintainer Info
@@ -14,7 +14,7 @@ VOLUME /tmp
 EXPOSE 8080
 
 # The application's jar file
-ARG JAR_FILE=target/io-trentino-0.4.0.jar
+ARG JAR_FILE=target/io-trentino-0.6.0.jar
 
 # Add the application's jar to the container
 ADD ${JAR_FILE} io-trentino.jar

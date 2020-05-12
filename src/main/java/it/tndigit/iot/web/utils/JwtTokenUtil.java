@@ -17,8 +17,8 @@ public class JwtTokenUtil {
 
     static final String CLAIM_KEY_AUTHORITIES = "roles";
     static final String CLAIM_KEY_IS_ENABLED = "isEnabled";
-    static final String CLAIM_KEY_EMAIL = "eMail";
-
+    //static final String CLAIM_KEY_EMAIL = "eMail";
+    static final String CLAIM_KEY_IDENTITY = "identity";
 
     @Autowired
     protected RSA rsa;
@@ -28,7 +28,7 @@ public class JwtTokenUtil {
         try {
             final Claims claims = getClaimsFromToken(token);
             if (claims!=null){
-                username = claims.get(CLAIM_KEY_EMAIL).toString();
+                username = claims.get(CLAIM_KEY_IDENTITY).toString();
             }
         } catch (Exception e) {
             username = null;
@@ -48,7 +48,7 @@ public class JwtTokenUtil {
             }
 
             return new JwtUser(
-                    claims.get(CLAIM_KEY_EMAIL).toString(),
+                    claims.get(CLAIM_KEY_IDENTITY).toString(),
                     "",
                     null,
                     (Boolean) claims.get(CLAIM_KEY_IS_ENABLED)

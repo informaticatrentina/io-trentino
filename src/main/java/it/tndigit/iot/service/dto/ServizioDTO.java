@@ -1,6 +1,8 @@
 package it.tndigit.iot.service.dto;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -8,7 +10,8 @@ import java.io.Serializable;
 
 @Component
 @Scope("prototype")
-@Data
+@Getter
+@Setter
 public class ServizioDTO extends CommonDTO implements Serializable {
 
     private static final long serialVersionUID = 257211671246793156L;

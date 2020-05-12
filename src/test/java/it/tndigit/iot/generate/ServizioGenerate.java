@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ServizioGenerate extends AbstractGenerate<ServizioPO, ServizioDTO> {
 
+    public static String EMAIL="aaa@ppp.it";
+
     @Override
     public ServizioPO getObjectPO() {
         ServizioPO po = applicationContext.getBean(ServizioPO.class);

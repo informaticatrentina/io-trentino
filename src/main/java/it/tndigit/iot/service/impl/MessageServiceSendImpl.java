@@ -14,21 +14,24 @@ import it.tndigit.iot.service.dto.ServizioDTO;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import it.tndigit.iot.service.mapper.ServizioMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.Optional;
 
 
 @Service
-@Transactional
-public class MessageServiceSendImpl implements MessageServiceSend {
-    private final Logger log = LoggerFactory.getLogger(MessageServiceSendImpl.class);
+@Slf4j
+public class
+MessageServiceSendImpl implements MessageServiceSend {
 
     private static String CODICEFISCALE= " codice fiscale ";
 
@@ -53,14 +56,16 @@ public class MessageServiceSendImpl implements MessageServiceSend {
     @Autowired
     private UtilityCrypt utilityCrypt;
 
-    protected Optional<ServizioDTO> getServizio(){
+    @Autowired
+    EntityManager entityManager;
 
+    protected Optional<ServizioDTO> getServizio(){
         String utente  = UtilityIot.getUserName();
 
         if (utente==null || utente.isEmpty()){
             return Optional.empty();
         }else {
-            Optional<ServizioPO> entePOOptional = servizioRepository.findByEmailPec(utente);
+            Optional<ServizioPO> entePOOptional = servizioRepository.findAllByCodiceIdentificativo(utente);
             if(entePOOptional.isPresent()){
                 return Optional.of(enteMapper.toDto(entePOOptional.get()));
             }
@@ -71,6 +76,7 @@ public class MessageServiceSendImpl implements MessageServiceSend {
 
 
     @Override
+    @Transactional
     public MessageDTO sendMessageInCode(MessageDTO messageDTO) throws IotException {
         Optional<ServizioDTO> servizioDTOOptional = getServizio();
         if (!servizioDTOOptional.isPresent()){
@@ -82,27 +88,15 @@ public class MessageServiceSendImpl implements MessageServiceSend {
         MessagePO messagePO = messageMapper.toEntity(messageDTO);
         messagePO = messageRepository.saveAndFlush(messagePO);
         messageDTO = messageMapper.toDto(messagePO);
-
         rabbitTemplate.convertAndSend(messageDTO.getTipoMessage().name() + "_QUEUE", messageDTO );
-
-
-        try{
-            if (messageDTO.getTipoCryptoMessage().equals(TipoCryptoMessage.CRYPTO)){
-                //Persisto i dati in modo cryptato
-                messagePO.setTesto(utilityCrypt.encrypt(messagePO.getTesto()));
-                messagePO.setOggetto(utilityCrypt.encrypt(messagePO.getOggetto()));
-                messageRepository.saveAndFlush(messagePO);
-            }
-        }catch (Exception ex){
-            log.error("Impossile salvare il messaggio cryptato " + ex.getMessage());
-        }
-
-
+        entityManager.flush();
+        entityManager.detach(messagePO);
         return messageDTO;
     }
 
 
     @Override
+    @Transactional
     public Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException {
 
 
@@ -110,7 +104,7 @@ public class MessageServiceSendImpl implements MessageServiceSend {
 
 
         //Cerco il messaggio nella base dati
-        Optional<MessagePO> messagePO = messageRepository.findByIdObjAndAndCodiceFiscale(idObj,codiceFiscale);
+        Optional<MessagePO> messagePO = messageRepository.findByIdObjAndAndCodiceFiscaleAndExternIDIsNotNull(idObj,codiceFiscale);
 
         if (messagePO.isPresent()){
             //Converto il messaggio

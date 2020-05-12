@@ -5,7 +5,8 @@ import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.common.DatePO;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,8 @@ import java.util.Set;
 @EntityListeners({ AuditingEntityListener.class })
 @Component
 @Scope("prototype")
-@Data
+@Getter
+@Setter
 public class MessagePO extends DatePO {
 
 
@@ -81,6 +83,10 @@ public class MessagePO extends DatePO {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "IDPAGAMENTO")
     private PaymentPO paymentPO;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "IDPRESCRIPTION")
+    private PrescriptionPO prescriptionPO;
 
 
 }

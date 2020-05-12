@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Repository
 public interface MessageRepository extends JpaRepository<MessagePO, Long> {
+    Optional<MessagePO> findByIdObjAndAndCodiceFiscaleAndExternIDIsNotNull (Long idObj, String codiceFiscale);
     Optional<MessagePO> findByIdObjAndAndCodiceFiscale (Long idObj, String codiceFiscale);
 
     List<MessagePO> findByTipoMessageAndExternIDNotNull(TipoMessage tipoMessage);

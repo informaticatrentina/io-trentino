@@ -4,7 +4,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.SwaggerDefinition;
 import it.tndigit.iot.exception.IotException;
-import it.tndigit.iot.logging.LogExecutionTime;
 import it.tndigit.iot.service.ServizioService;
 import it.tndigit.iot.service.dto.ServizioDTO;
 import it.tndigit.iot.web.rest.util.HeaderUtil;
@@ -28,7 +27,6 @@ import java.util.Optional;
 @RestController
 @SwaggerDefinition()
 @Api( value="API Servizio",
-        description="Permette il CRUD completo dell' Servizio",
         tags = "GESTIONE SERVIZIO")
 public class ServizioResource extends AbstractResource {
 
@@ -56,12 +54,10 @@ public class ServizioResource extends AbstractResource {
      */
     @PostMapping("/servizio")
     @ApiOperation("Inserisce un nuovo Servizio")
-    @LogExecutionTime
     public ResponseEntity<ServizioDTO> createServizio(@RequestBody ServizioDTO servizioDTO,
                                                       BindingResult bindingResult,
                                                       HttpServletResponse response){
         if (servizioDTO.getIdObj() != null) {
-//            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             servizioDTO.setErroreImprevisto("L'identificativo NON deve presente in fase di inseriento servizio");
             return new ResponseEntity<>(servizioDTO, HttpStatus.NOT_ACCEPTABLE);
         }
@@ -84,6 +80,7 @@ public class ServizioResource extends AbstractResource {
             return new ResponseEntity<>(servizioDTO, HttpStatus.FORBIDDEN);
         }
         catch (Exception ex){
+            servizioDTO.setErroreImprevisto(ex.getMessage());
             return new ResponseEntity<>(servizioDTO, HttpStatus.NOT_ACCEPTABLE);
 
         }
@@ -97,7 +94,6 @@ public class ServizioResource extends AbstractResource {
      */
     @GetMapping("/servizio/{idObj}")
     @ApiOperation("Ritorna un Servizio dato un determinato idObj")
-    @LogExecutionTime
     public ResponseEntity<ServizioDTO> getServizio(@PathVariable Long idObj) {
         log.debug("REST request to get Area : {}", idObj);
 
@@ -121,9 +117,7 @@ public class ServizioResource extends AbstractResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/servizio")
-    @LogExecutionTime
     @ApiOperation("Aggiorna un Servizio esistServizio")
-
     public ResponseEntity<ServizioDTO> updateServizio(@RequestBody ServizioDTO ServizioDTO, BindingResult bindingResult) throws URISyntaxException {
         if (ServizioDTO.getIdObj() == null) {
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
@@ -150,7 +144,6 @@ public class ServizioResource extends AbstractResource {
      */
     @DeleteMapping("/servizio/{idObj}")
     @ApiOperation("Cancella un Servizio dato un determinato idObj")
-    @LogExecutionTime
     public ResponseEntity<Void> deleteServizio(@PathVariable Long idObj) {
         servizioService.delete(idObj);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, idObj.toString())).build();

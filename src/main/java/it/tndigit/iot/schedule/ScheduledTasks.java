@@ -5,6 +5,7 @@ import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.costanti.TipoRuoli;
 import it.tndigit.iot.repository.MessageRepository;
 import it.tndigit.iot.service.MessageServiceSend;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,8 @@ import java.time.LocalDateTime;
  *
  */
 
+@Slf4j
 public class ScheduledTasks {
-
-    private final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
     @Autowired
     private MessageRepository messageRepository;

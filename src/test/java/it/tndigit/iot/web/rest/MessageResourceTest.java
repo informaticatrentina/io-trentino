@@ -14,15 +14,16 @@ import it.tndigit.iot.service.MessageServiceSend;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import it.tndigit.iot.web.validator.MessageValidator;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,13 +32,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest()
 @DisplayName( "Gestione Invio Messaggi")
 @Transactional
+@Slf4j
+@PropertySource("classpath:message.properties")
 public class MessageResourceTest extends AbstractResourceTest{
 
 
@@ -89,6 +92,7 @@ public class MessageResourceTest extends AbstractResourceTest{
         servizioRepository.deleteAll();
         ServizioPO servizioPO = servizioGenerate.getObjectPO();
         servizioPO.setEmailPec("aaa@aaa.it");
+        servizioPO.setCodiceIdentificativo("AAABBBCCC");
         servizioRepository.saveAndFlush(servizioPO);
 
         Mockito.when(defaultApi.getApiClient()).thenReturn(new ApiClient());
@@ -105,7 +109,8 @@ public class MessageResourceTest extends AbstractResourceTest{
 
 
     @Test
-    @WithMockUser(username = "aaa@aaa.it",roles = "USER")
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio Normale")
     @Transactional
     public void createMessage() throws Exception {
         messageRepository.deleteAll();
@@ -136,8 +141,77 @@ public class MessageResourceTest extends AbstractResourceTest{
     }
 
 
+    @Test
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio con pagamento")
+    @Transactional
+    public void createMessagePayment() throws Exception {
+        messageRepository.deleteAll();
+        MessagePO messagePO = messageGenerate.getObjectPOPayment(new MessagePO());
+
+        int databaseSizeBeforeCreate = messageRepository.findAll().size();
+
+        // Create the Area
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
+                .andExpect(status().isCreated());
+
+        // Validate the Area in the database
+        List<MessagePO> messagePOList = messageRepository.findAll();
+        assertThat(messagePOList).hasSize(databaseSizeBeforeCreate + 1);
+        MessagePO testMessage = messagePOList.get(messagePOList.size() - 1);
+        assertNotNull(testMessage.getPaymentPO());
+
+    }
 
     @Test
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio con pagamento a importo 0")
+    @Transactional
+
+    public void createMessagePaymentError() throws Exception {
+        messageRepository.deleteAll();
+        MessagePO messagePO = messageGenerate.getObjectPOPayment(new MessagePO());
+
+        int databaseSizeBeforeCreate = messageRepository.findAll().size();
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+        messageDTO.getPaymentDTO().setImporto(0);
+
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.erroreImprevisto").isNotEmpty());
+
+    }
+
+    @Test
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio con pagamento con numero Avviso errato")
+    @Transactional
+
+    public void createMessagePaymentAvvisoError() throws Exception {
+        messageRepository.deleteAll();
+        MessagePO messagePO = messageGenerate.getObjectPOPayment(new MessagePO());
+
+        int databaseSizeBeforeCreate = messageRepository.findAll().size();
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+        messageDTO.getPaymentDTO().setNumeroAvviso("456dasf");
+
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.erroreImprevisto").isNotEmpty());
+
+    }
+
+
+    @Test
+    @DisplayName("Creazione messagggio Senza Servizio")
     public void createMessageWithOutServizio() throws Exception {
 
         MessagePO messagePO = messageGenerate.getObjectPO(new MessagePO());
@@ -150,9 +224,73 @@ public class MessageResourceTest extends AbstractResourceTest{
                 .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().json("{'message':'Bad Request: Impossibile inviare il messaggio, Servizio NON presente'}"));
+    }
 
+
+
+    @Test
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio con Prescrizione")
+    @Transactional
+    public void createMessagePrescription() throws Exception {
+        messageRepository.deleteAll();
+        MessagePO messagePO = messageGenerate.getObjectPOPrescription(new MessagePO());
+        int databaseSizeBeforeCreate = messageRepository.findAll().size();
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+
+        messagePO.getPrescriptionPO().setIup("");
+
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
+                .andExpect(status().isCreated());
+
+        // Validate the Area in the database
+        List<MessagePO> messagePOList = messageRepository.findAll();
+        assertThat(messagePOList).hasSize(databaseSizeBeforeCreate + 1);
+        MessagePO testMessage = messagePOList.get(messagePOList.size() - 1);
+        assertNotNull(testMessage.getPrescriptionPO());
 
     }
+    @Test
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio con Prescrizione")
+    @Transactional
+    public void createMessagePrescriptionErrorNRE() throws Exception {
+        messageRepository.deleteAll();
+        MessagePO messagePO = messageGenerate.getObjectPOPrescription(new MessagePO());
+
+        messagePO.getPrescriptionPO().setNre("aa");
+        int databaseSizeBeforeCreate = messageRepository.findAll().size();
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.erroreImprevisto").isNotEmpty());
+
+    }
+
+    @Test
+    @WithMockUser(username = "AAABBBCCC",roles = "USER")
+    @DisplayName("Creazione messagggio con Prescrizione")
+    @Transactional
+    public void createMessagePrescriptionErrorIUP() throws Exception {
+        messageRepository.deleteAll();
+        MessagePO messagePO = messageGenerate.getObjectPOPrescription(new MessagePO());
+
+        messagePO.getPrescriptionPO().setIup("aa");
+        int databaseSizeBeforeCreate = messageRepository.findAll().size();
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+        restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
+                .andExpect(status().is4xxClientError())
+                .andExpect(jsonPath("$.erroreImprevisto").isNotEmpty());
+
+    }
+
+
 
 
 }

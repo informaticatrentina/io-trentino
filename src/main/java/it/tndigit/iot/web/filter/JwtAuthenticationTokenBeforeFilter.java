@@ -61,7 +61,7 @@ public class JwtAuthenticationTokenBeforeFilter extends OncePerRequestFilter {
                     if (jwtTokenUtil.validateToken(authToken.get(), userDetails)) {
                         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
                         authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
-                        Optional<ServizioPO> servizioPOOptional = servizioRepository.findByEmailPec(userDetails.getUsername());
+                        Optional<ServizioPO> servizioPOOptional = servizioRepository.findAllByCodiceIdentificativo(userDetails.getUsername());
 
                         if (servizioPOOptional.isPresent()){
                             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

@@ -7,6 +7,8 @@ import it.tndigit.iot.costanti.TipoMessage;
 import it.tndigit.iot.service.dto.CommonDTO;
 import it.tndigit.iot.service.dto.ServizioDTO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -16,9 +18,9 @@ import java.util.Set;
 
 @Component
 @Scope("prototype")
-@Data
+@Getter
+@Setter
 public class MessageDTO extends CommonDTO implements Serializable {
-
 
     private static final long serialVersionUID = 6540592208421994223L;
     @Size(min = 16, max = 16)
@@ -51,6 +53,8 @@ public class MessageDTO extends CommonDTO implements Serializable {
     private Set<NotificationDTO> notificationDTOS;
 
     private PaymentDTO paymentDTO;
+
+    private PrescriptionDTO prescriptionDTO;
 
     private String errorSend;
 

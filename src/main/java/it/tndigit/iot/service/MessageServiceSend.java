@@ -18,6 +18,7 @@ public interface MessageServiceSend {
 
     MessageDTO sendMessageInCode(MessageDTO messageDTO) throws IotException;
     Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException ;
+    //void cryptoMessage(MessageDTO messageDTO) throws IotException;
     Optional<MessageDTO> getMessage(Long idObj, String codiceFiscale) throws IotException ;
 
 

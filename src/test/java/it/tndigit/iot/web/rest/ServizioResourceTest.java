@@ -9,26 +9,29 @@ import it.tndigit.iot.service.mapper.ServizioMapper;
 import it.tndigit.iot.web.validator.ServizioValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@DisplayName("Gestione Servizio")
 public class ServizioResourceTest extends AbstractResourceTest{
-
 
     @Autowired
     private ServizioService servizioService;
@@ -61,9 +64,9 @@ public class ServizioResourceTest extends AbstractResourceTest{
                 .setMessageConverters(jacksonMessageConverter).build();
     }
 
-
     @Test
     @Transactional
+    @DisplayName("Creazione Servizio")
     public void createServizio()  throws  Exception{
 
         servizioRepository.deleteAll();
@@ -91,11 +94,66 @@ public class ServizioResourceTest extends AbstractResourceTest{
         assertThat(testEnte.getIdObj()).isGreaterThan(0L);
         Long idObjfirst = testEnte.getIdObj();
 
+
+        ServizioPO servizioPO_2 = servizioGenerate.getObjectPO(new ServizioPO());
+        ServizioDTO enteDTO_2 = enteMapper.toDto(servizioPO_2);
+        enteDTO_2.setCodiceIdentificativo(enteDTO.getCodiceIdentificativo());
+        //Controllo che non possano esserci due servizi con lo stesso codice
+
+
+
+        restServizioMockMvc.perform(post("/api/v1/servizio")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(enteDTO_2)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.erroreImprevisto").isNotEmpty());
+
+    }
+
+
+
+    @Test
+    @Transactional
+    @DisplayName("Creazione Servizio con IDOBJ")
+    public void createServizioWithIdObj()  throws  Exception {
+
+        servizioRepository.deleteAll();
+        int databaseSizeBeforeCreate = servizioRepository.findAll().size();
+
+        servizioPO =  servizioGenerate.getObjectPO(new ServizioPO());
+        ServizioDTO enteDTO = enteMapper.toDto(servizioPO);
+        enteDTO.setIdObj(1234L);
+
+        restServizioMockMvc.perform(post("/api/v1/servizio")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(enteDTO)))
+                .andExpect(status().isNotAcceptable());
     }
 
 
     @Test
     @Transactional
+    @DisplayName("Creazione Servizio no Validate")
+    public void createServizioNoValidate()  throws  Exception {
+
+        servizioRepository.deleteAll();
+        servizioPO =  servizioGenerate.getObjectPO(new ServizioPO());
+        servizioPO.setNomeServizio("");
+        ServizioDTO enteDTO = enteMapper.toDto(servizioPO);
+        enteDTO.setIdObj(1234L);
+
+        restServizioMockMvc.perform(post("/api/v1/servizio")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(enteDTO)))
+                .andExpect(status().isNotAcceptable());
+    }
+
+
+
+
+    @Test
+    @Transactional
+    @DisplayName("Creazione Servizio Multiplo")
     public void createServizioSequence()  throws  Exception{
 
         servizioRepository.deleteAll();
@@ -124,7 +182,6 @@ public class ServizioResourceTest extends AbstractResourceTest{
                 .content(TestUtil.convertObjectToJsonBytes(servizioDTO)))
                 .andExpect(status().isCreated());
 
-        // Validate the Area in the database
         enteList = servizioRepository.findAll();
         assertThat(enteList).hasSize(databaseSizeBeforeCreate + 2);
         ServizioPO testEnteTwo = enteList.get(enteList.size() - 1);
@@ -132,7 +189,47 @@ public class ServizioResourceTest extends AbstractResourceTest{
 
     }
 
+
     @Test
+    @DisplayName("Get Servizio")
+    @Transactional
+    @Sql(scripts = {"/script/insertServizio.sql"})
+    public void getServizio ()throws Exception{
+        restServizioMockMvc.perform(get("/api/v1/servizio/{idObj}", 10000L))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+            .andExpect(jsonPath("$.codiceIdentificativo").value("ÒLJASFKLA"));
+
+        restServizioMockMvc.perform(get("/api/v1/servizio/{idObj}", 20000L))
+                .andExpect(status().isNoContent());
+
+    }
+
+    @Test
+    @DisplayName("Update Servizio")
+    @Transactional
+    @Sql(scripts = {"/script/insertServizio.sql"})
+    public void updateServizio ()throws Exception{
+
+        Optional<ServizioPO> servizioPOOptional = servizioRepository.findAll().stream().findFirst();
+        ServizioDTO servizioDTO = enteMapper.toDto(servizioPOOptional.get());
+        servizioDTO.setEmail(ServizioGenerate.EMAIL);
+
+        restServizioMockMvc.perform(put("/api/v1/servizio")
+                .contentType(TestUtil.APPLICATION_JSON_UTF8)
+                .content(TestUtil.convertObjectToJsonBytes(servizioDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.email").value(ServizioGenerate.EMAIL));
+
+
+
+    }
+
+
+
+
+    @Test
+    @DisplayName("Delete Servizio")
     public void deleteServizio()throws  Exception {
 
         ServizioPO servizioPODelete = servizioRepository.saveAndFlush(servizioGenerate.getObjectPO());

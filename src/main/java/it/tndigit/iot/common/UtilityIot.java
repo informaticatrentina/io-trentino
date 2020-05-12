@@ -7,6 +7,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.regex.Pattern;
 
 /**
  * @author Mirko Pianetti
@@ -15,6 +16,9 @@ import java.util.Collection;
  *
  */
 public class UtilityIot {
+
+
+	private static final String REG_PAGAMENTO = "^[0123][0-9]{17}$";
 
 
 	/**
@@ -47,6 +51,13 @@ public class UtilityIot {
 			return "";
 		}
 	}
+
+	public static Boolean checkCodicePagamento(String codice){
+		return  Pattern.matches(REG_PAGAMENTO, codice);
+	}
+
+
+
 
 
 }

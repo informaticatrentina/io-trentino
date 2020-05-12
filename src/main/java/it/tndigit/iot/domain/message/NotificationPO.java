@@ -4,6 +4,8 @@ package it.tndigit.iot.domain.message;
 import it.tndigit.iot.costanti.TipoStatus;
 import it.tndigit.iot.domain.common.CommonPO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -19,7 +21,8 @@ import java.util.Objects;
 @EntityListeners({ AuditingEntityListener.class })
 @Component
 @Scope("prototype")
-@Data
+@Getter
+@Setter
 public class NotificationPO extends CommonPO {
     private static final long serialVersionUID = -8978926117208941821L;
 
@@ -45,7 +48,6 @@ public class NotificationPO extends CommonPO {
 
     @Column(name = "ULTIMOTENTATIVO")
     private LocalDateTime lastChance;
-
 
     @Column(name = "NOTE", length = 10000)
     private String note;

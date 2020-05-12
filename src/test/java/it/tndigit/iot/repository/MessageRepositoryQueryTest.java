@@ -15,13 +15,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest
 @Sql(scripts = {"/script/insertServizio.sql", "/script/insertMessage.sql"})
 @Transactional
-@DisplayName( "Find notification")
+@DisplayName( "Trova Notifiche IO Italia")
 public class MessageRepositoryQueryTest {
 
     @Autowired
     MessageRepository messageRepository;
 
     @Test()
+    @DisplayName("Find Messaggi per Check")
     public void find() {
 
         List<MessagePO> listaMessaggi = messageRepository.findMessageForCheck();

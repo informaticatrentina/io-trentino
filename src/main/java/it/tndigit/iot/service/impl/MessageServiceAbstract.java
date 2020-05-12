@@ -7,6 +7,8 @@ import it.tndigit.iot.service.mapper.NotificationMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import javax.persistence.EntityManager;
+
 public abstract class MessageServiceAbstract implements MessageServiceReceive {
 
     @Autowired
@@ -20,6 +22,9 @@ public abstract class MessageServiceAbstract implements MessageServiceReceive {
 
     @Autowired
     protected  JavaMailSender javaMailSender;
+
+
+
 
 
 }

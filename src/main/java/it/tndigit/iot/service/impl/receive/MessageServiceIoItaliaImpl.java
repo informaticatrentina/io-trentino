@@ -2,6 +2,8 @@ package it.tndigit.iot.service.impl.receive;
 
 import it.tndigit.ioitalia.service.dto.*;
 import it.tndigit.ioitalia.web.rest.DefaultApi;
+import it.tndigit.iot.common.UtilityCrypt;
+import it.tndigit.iot.costanti.TipoCryptoMessage;
 import it.tndigit.iot.costanti.TipoStatus;
 import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.domain.message.NotificationPO;
@@ -12,12 +14,13 @@ import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.dto.message.NotificationDTO;
 import it.tndigit.iot.service.impl.MessageServiceAbstract;
 import it.tndigit.iot.service.mapper.MessageMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 
 import java.time.LocalDateTime;
@@ -30,9 +33,8 @@ import java.util.Optional;
  */
 
 @Component
+@Slf4j
 public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implements MessageServiceReceive {
-    private final Logger log = LoggerFactory.getLogger(MessageServiceIoItaliaImpl.class);
-
 
 
     @Autowired
@@ -47,15 +49,16 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
     @Autowired
     DefaultApi defaultApi;
 
-
+    @Autowired
+    UtilityCrypt utilityCrypt;
 
     @Override
-    public MessageDTO sendMessage(MessageDTO messageDTO) throws IotException{
+    public MessageDTO sendMessage(MessageDTO messageDTO){
         return null;
-
     }
 
     @RabbitListener(queues = "IO_ITALIA_QUEUE" )
+    @Transactional
     public void receiveSendMessage(MessageDTO messageDTO)  {
 
         Boolean errore= Boolean.FALSE;
@@ -79,18 +82,27 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             try{
                 InlineResponse201 inlineResponse201 =  defaultApi.submitMessageforUser(messageDTO.getCodiceFiscale(), convertMessage(messageDTO));
                 messageDTO.setExternID(inlineResponse201.getId());
-            }catch (Exception ex){
+            }catch (HttpClientErrorException hcE){
+                messageDTO.setErrorSend(hcE.getStatusCode() + " "  + hcE.getMessage());
+            }
+            catch (Exception ex){
                 messageDTO.setErrorSend(ex.getMessage());
             }
         }
 
-
         Optional<MessagePO> messagePOCaricato = messageRepository.findById(messageDTO.getIdObj());
         if (messagePOCaricato.isPresent()){
+
             MessagePO messagePO = messagePOCaricato.get();
             messagePO.setExternID(messageDTO.getExternID());
             messagePO.setErrorSend(messageDTO.getErrorSend());
-            messageRepository.saveAndFlush(messagePO);
+            if (messagePO.getTipoCryptoMessage().equals(TipoCryptoMessage.CRYPTO)){
+                messagePO.setOggetto(utilityCrypt.encrypt(messageDTO.getOggetto()));
+                messagePO.setTesto(utilityCrypt.encrypt(messageDTO.getTesto()));
+            }
+            messagePO.setErrorSend(messageDTO.getErrorSend());
+            MessagePO messagePOSalvato = messageRepository.saveAndFlush(messagePO);
+
         }
     }
 
@@ -152,16 +164,16 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
      *
      */
 
-    private NewMessage convertMessage(MessageDTO messageDTO) {
+    protected NewMessage convertMessage(MessageDTO messageDTO) {
 
         try {
             NewMessage newMessage =new NewMessage();
             MessageContent messageContent = new MessageContent();
-            NewMessageDefaultAddresses newMessageDefaultAddresses = new NewMessageDefaultAddresses();
 
-            PaymentData paymentData = new PaymentData();
             newMessage.setContent(messageContent);
             newMessage.setTimeToLive(messageDTO.getTimeToLive());
+
+
             //Gestione scadenza Messaggio
             if (messageDTO.getScadenza()!=null){
                 newMessage.getContent().setDueDate(messageDTO.getScadenza());
@@ -170,13 +182,8 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             newMessage.getContent().setMarkdown(messageDTO.getTesto());
             newMessage.getContent().setSubject(messageDTO.getOggetto());
 
-            if (messageDTO.getPaymentDTO() != null && messageDTO.getPaymentDTO().getIdObj()!=null){
-                newMessage.getContent().setPaymentData(paymentData);
-                newMessage.getContent().getPaymentData().setInvalidAfterDueDate(messageDTO.getPaymentDTO().getInvalid_after_due_date());
-                newMessage.getContent().getPaymentData().setAmount(messageDTO.getPaymentDTO().getImporto());
-                newMessage.getContent().getPaymentData().setNoticeNumber(messageDTO.getPaymentDTO().getNumeroAvviso());
-
-            }
+            convertPayment(messageDTO, newMessage, new PaymentData());
+            convertPrescription(messageDTO, newMessage, new PrescriptionData());
 
             return  newMessage;
         } catch (IotException ex) {
@@ -189,6 +196,26 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
             throw (iotException);
         }
     }
+
+    private void convertPayment(MessageDTO messageDTO, NewMessage newMessage, PaymentData paymentData) {
+        if (messageDTO.getPaymentDTO() != null && messageDTO.getPaymentDTO().getIdObj()!=null){
+            newMessage.getContent().setPaymentData(paymentData);
+            newMessage.getContent().getPaymentData().setInvalidAfterDueDate(messageDTO.getPaymentDTO().getInvalid_after_due_date());
+            newMessage.getContent().getPaymentData().setAmount(messageDTO.getPaymentDTO().getImporto());
+            newMessage.getContent().getPaymentData().setNoticeNumber(messageDTO.getPaymentDTO().getNumeroAvviso());
+        }
+    }
+
+
+    private void convertPrescription(MessageDTO messageDTO, NewMessage newMessage, PrescriptionData prescriptionData) {
+        if (messageDTO.getPrescriptionDTO() != null && messageDTO.getPrescriptionDTO().getIdObj()!=null){
+            newMessage.getContent().setPrescriptionData(prescriptionData );
+            newMessage.getContent().getPrescriptionData().setIup(messageDTO.getPrescriptionDTO().getIup());
+            newMessage.getContent().getPrescriptionData().setNre(messageDTO.getPrescriptionDTO().getNre());
+            newMessage.getContent().getPrescriptionData().setPrescriberFiscalCode(messageDTO.getPrescriptionDTO().getCodiceFiscaleDottore());
+        }
+    }
+
 
     private void convertNotification(MessageResponseWithContent messageResponseWithContent, MessageDTO messageDTO)throws IotException{
         if (log.isDebugEnabled()){

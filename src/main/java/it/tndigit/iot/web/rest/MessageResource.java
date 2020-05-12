@@ -3,7 +3,6 @@ package it.tndigit.iot.web.rest;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import it.tndigit.iot.logging.LogExecutionTime;
 import it.tndigit.iot.service.MessageServiceSend;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.web.rest.util.HeaderUtil;
@@ -48,7 +47,6 @@ public class MessageResource extends AbstractResource  {
      */
     @PostMapping("/message/{codiceFiscale}")
     @ApiOperation("Crea un nuovo messaggio dato un codicefiscale")
-    @LogExecutionTime
     public ResponseEntity<MessageDTO> createMessage(@Valid @RequestBody MessageDTO messageDTO,
                                                     @PathVariable String codiceFiscale,
                                                     BindingResult bindingResult) throws URISyntaxException {
@@ -66,6 +64,9 @@ public class MessageResource extends AbstractResource  {
             messageDTO.setCodiceFiscale(codiceFiscale);
         }
         messageDTO = messageService.sendMessageInCode(messageDTO);
+        //messageService.cryptoMessage(messageDTO);
+
+
         return ResponseEntity.created(new URI("/v1/api/messaggio/" + codiceFiscale))
                 .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, messageDTO.getIdObj().toString()))
                 .body(messageDTO);
@@ -79,7 +80,6 @@ public class MessageResource extends AbstractResource  {
      */
     @GetMapping("/message/{id}/{codiceFiscale}")
     @ApiOperation("Ritorna il messaggio e relativo stato")
-    @LogExecutionTime
     public ResponseEntity<MessageDTO> getMessage(@PathVariable Long id,
                                          @PathVariable String codiceFiscale) {
 

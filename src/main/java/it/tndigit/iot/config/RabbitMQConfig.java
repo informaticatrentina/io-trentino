@@ -32,7 +32,7 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    DirectExchange exchange() {
+    DirectExchange directExchange() {
         return new DirectExchange(exchange);
     }
 

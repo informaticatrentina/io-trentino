@@ -4,18 +4,13 @@ docker run -d --hostname ioItalia-rabbit --name ioItalia-rabbit -p 15672:15672 -
 
 
 
-
-
-
-
 docker rmi tndigit/io-trentino
 mvn clean package
 docker build -t tndigit/io-trentino .
 #docker run -p 8281:8281 -e TEST_VAR='testing' --name IoApp tndigit/io-trentino:latest
 docker run -p 8281:8281 -e "SPRING_PROFILES_ACTIVE=dev" -e "CONFIG_URI=http://172.26.1.19:8888" --name IoApp tndigit/io-trentino:latest
-    docker run -p 8281:8281 -e "SPRING_PROFILES_ACTIVE=devcom" -e "CONFIG_URI=http://52.236.163.163:8888" --name IoApp tndigit/io-trentino:latest
 
-
+docker run -p 8281:8281 -e "SPRING_PROFILES_ACTIVE=devcom" -e "CONFIG_URI=http://52.236.163.163:8888" --name IoApp tndigit/io-trentino:latest
 
 
 c-e "SPRING_PROFILES_ACTIVE=dev"

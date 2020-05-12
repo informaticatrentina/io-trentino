@@ -37,16 +37,32 @@
 }
 
 {
-  "email": "string",
-  "oggetto": "Ciao $i qui pare funzionare tutto",
+  "email": "alessandro.celli@tndigit.it",
+  "oggetto": "Ciao Ale, messaggio $i con il pagamento",
   "paymentDTO": {
-    "importo": 20,
+    "importo": 100,
     "invalid_after_due_date": true,
     "numeroAvviso": "555555"
   },
-  "testo": "Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto Ciao $i qui pare funzionare tutto ",
+  "testo": "Ciao $i paga sta multazzaaaaaaaaaaaaaaaaaaaa ",
   "timeToLive": 3600,
-  "tipoMessage": "IO_ITALIA"
+  "tipoMessage": "EMAIL",
+  "tipoCryptoMessage": "NO_CRYPTO"
 }
 
-eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpb3QiLCJyb2xlcyI6W10sImlzRW5hYmxlZCI6dHJ1ZSwiZXhwIjo0NzI3MjgyNDAwLCJpYXQiOnsieWVhciI6MjAxOSwibW9udGgiOiJPQ1RPQkVSIiwiY2hyb25vbG9neSI6eyJjYWxlbmRhclR5cGUiOiJpc284NjAxIiwiaWQiOiJJU08ifSwiZXJhIjoiQ0UiLCJkYXlPZlllYXIiOjI5NCwiZGF5T2ZXZWVrIjoiTU9OREFZIiwibGVhcFllYXIiOmZhbHNlLCJkYXlPZk1vbnRoIjoyMSwibW9udGhWYWx1ZSI6MTB9LCJlTWFpbCI6InNlcnZpemlvLmlubm92YXppb25lZGlnaXRhbGVAcGVjLmNvbXVuZS50cmVudG8uaXQifQ.5Qp3GpZW2BdZ1jW6ePTIxRL-PRvDxXbvvL-KUsgnucI
+
+{
+  "email": "alessandro.celli@tndigit.it",
+  "oggetto": "Ciao Ale, messaggio $i con la ricetta",
+  "prescriptionDTO": {
+    "codiceFiscaleDottore": "string",
+    "iup": "string",
+    "nre": "string"
+  },
+  "testo": "Super Ricetta Super RicettaSuper Ricetta Super RicettaSuper Ricetta Super RicettaSuper Ricetta Super RicettaSuper Ricetta Super RicettaSuper Ricetta Super Ricetta",
+  "timeToLive": 3600,
+  "tipoMessage": "EMAIL",
+  "tipoCryptoMessage": "NO_CRYPTO"
+}
+
+

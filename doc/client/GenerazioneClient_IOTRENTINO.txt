@@ -1,0 +1,19 @@
+    java -jar swagger-codegen-cli.jar generate \
+        -i http://localhost:8281/v2/api-docs?group=Versione%201 \
+        --api-package it.tndigit.iotrentino.web.rest \
+       --model-package it.tndigit.iotrentino.service.dto \
+       --invoker-package it.tndigit.iotrentino.client.invoker \
+       --group-id it.tndigit.iot \
+       --artifact-id spring-iotrentino-api-client \
+       --artifact-version 0.0.6 \
+       -DdateLibrary=java8-localdatetime \
+       -l java \
+       --library resttemplate \
+       -o spring-iotrentino-api-client
+
+
+#mvn deploy:deploy-file -DgeneratePom=false -DrepositoryId=infotn_public_repo -Durl=https://maven.infotn.it/nexus/repository/Infotn_public_repo/ -DpomFile=pom.xml -Dfile=target/spring-ioitalia-api-client-1.0.0.jar
+
+#Maven pubblico
+mvn deploy:deploy-file -DgeneratePom=false -DrepositoryId=tndigit_public_repo -Durl=https://maven.tndigit.it/repository/repo_ioitalia/ -DpomFile=pom.xml -Dfile=target/spring-iotrentino-api-client-0.0.6.jar
+

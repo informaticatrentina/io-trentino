@@ -2,6 +2,8 @@ package it.tndigit.iot.domain;
 
 import it.tndigit.iot.domain.common.DatePO;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +15,8 @@ import javax.validation.constraints.NotNull;
 @Inheritance(strategy = InheritanceType.JOINED)
 @Component
 @Scope("prototype")
-@Data
+@Getter
+@Setter
 public class ServizioPO extends DatePO {
 
     @NotNull
@@ -47,7 +50,7 @@ public class ServizioPO extends DatePO {
     private String tokenIoItalia;
 
     @NotNull
-    @Column(name = "COD_IDENTIFICATIVO")
+    @Column(name = "COD_IDENTIFICATIVO",unique = true)
     private String codiceIdentificativo;
 
 

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 @Repository
 public interface ServizioRepository extends JpaRepository<ServizioPO, Long> {
-    Optional<ServizioPO> findByEmailPec(String eMailPec);
+    Optional<ServizioPO> findAllByCodiceIdentificativo(String codiceIdendificativo);
 }

@@ -8,6 +8,7 @@ import it.tndigit.iot.service.MessageServiceReceive;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.dto.message.NotificationDTO;
 import it.tndigit.iot.service.impl.MessageServiceAbstract;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -27,11 +28,8 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@Slf4j
 public class MessageServiceEmailImpl extends MessageServiceAbstract implements MessageServiceReceive {
-    private final Logger log = LoggerFactory.getLogger(MessageServiceEmailImpl.class);
-
-
-
 
     @Autowired
     ApplicationContext applicationContext;
@@ -40,8 +38,6 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
     @Autowired
     MessageRepository messageRepository;
 
-//    @Autowired
-//    MailSender mailSender;
 
     @Override
     public MessageDTO sendMessage(MessageDTO messageDTO) throws IotException {
@@ -55,11 +51,9 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
 
     @Override
     @RabbitListener(queues = "EMAIL_QUEUE")
-    public void receiveSendMessage(MessageDTO messageDTO) throws IotException{
-
-
+    @Transactional
+    public void receiveSendMessage(MessageDTO messageDTO){
         log.info(" RICEVUTO MESSAGGIO EMAIL CON ID " + messageDTO.getIdObj());
-
         //Controllo che il messaggio sia presente nella base dati, potrebbe essere stato cancellato
         Optional< MessagePO > messagePO = messageRepository.findById(messageDTO.getIdObj());
 
@@ -75,6 +69,7 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
                 javaMailSender.send(mailMessage);
                 this.createNotification(messageDTO);
                 this.saveNotification(messageDTO);
+
             }catch (Exception ex){
                 log.error(ex.getMessage());
 
@@ -83,12 +78,7 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
     }
 
 
-    private void createNotification(MessageDTO messageDTO) throws IotException {
-
-        if (log.isDebugEnabled()) {
-            log.debug("Inizio elaborazione di conversione notirifa");
-        }
-
+    private void createNotification(MessageDTO messageDTO) {
         NotificationDTO notificationDTO = applicationContext.getBean(NotificationDTO.class);
         notificationDTO.setMessageDTO(messageDTO);
         notificationDTO.setEmailNotification(TipoStatus.SENT);
@@ -101,14 +91,15 @@ public class MessageServiceEmailImpl extends MessageServiceAbstract implements M
         messageDTO.getNotificationDTOS().add(notificationDTO);
 
     }
-//
-//
+
     private void saveNotification(MessageDTO messageDTO) {
         try{
             messageDTO.getNotificationDTOS()
                     .stream()
                     .map(notificationDTO -> notificationMapper.toEntity(notificationDTO))
-                    .forEach(notificationPO -> notificationRepository.saveAndFlush(notificationPO));
+                    .forEach(
+                            notificationPO -> notificationRepository.saveAndFlush(notificationPO)
+                    );
         }catch (DataIntegrityViolationException diEx){
             log.error("Messaggio " + messageDTO.getIdObj()  + "Non presente nella base dati -- Attenzione!!");
 
