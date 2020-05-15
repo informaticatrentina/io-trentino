@@ -29,7 +29,7 @@ spring:
 
 
   rabbitmq:
-    host: localhost
+    host: 172.26.7.70
     port: 5672
     username: guest
     password: guest
@@ -72,7 +72,7 @@ spring:
 
   datasource:
     platform: postgresql
-    url: jdbc:postgresql://localhost:5432/suiot01?characterEncoding=UTF-8
+    url: jdbc:postgresql://172.26.7.70:5432/suiot01?characterEncoding=UTF-8
     username: infotn
     password: infotn
     driver-class-name: org.postgresql.Driver
@@ -148,5 +148,4 @@ management:
         include: '*'
     web:
       exposure:
-        include:
-          info, health
+        include: '*'

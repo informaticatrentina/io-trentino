@@ -73,29 +73,43 @@ public class MessageResource extends AbstractResource  {
     }
 
 
-    /**
-     * GET  /message/{id}/{codiceFiscale} : get the "id" messaggio.
-     *
-     * @return the ResponseEntity with status 200 (OK) and with body the areaDTO, or with status 404 (Not Found)
-     */
-    @GetMapping("/message/{id}/{codiceFiscale}")
-    @ApiOperation("Ritorna il messaggio e relativo stato")
-    public ResponseEntity<MessageDTO> getMessage(@PathVariable Long id,
-                                         @PathVariable String codiceFiscale) {
+//    /**
+//     * GET  /message/{id}/{codiceFiscale} : get the "id" messaggio.
+//     *
+//     * @return the ResponseEntity with status 200 (OK) and with body the areaDTO, or with status 404 (Not Found)
+//     */
+//    @GetMapping("/message/{id}/{codiceFiscale}")
+//    @ApiOperation("Ritorna il messaggio e relativo stato")
+//    public ResponseEntity<MessageDTO> getMessage(@PathVariable Long id,
+//                                         @PathVariable String codiceFiscale) {
+//
+//        if (id ==null || codiceFiscale == null ||codiceFiscale.isEmpty() ){
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
+//
+//        Optional<MessageDTO> messageDTO = messageService.getMessage(id,codiceFiscale);
+//        if (messageDTO.isPresent())
+//            return new ResponseEntity<>(messageDTO.get(), HttpStatus.OK);
+//        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//
+//    }
 
-        if (id ==null || codiceFiscale == null ||codiceFiscale.isEmpty() ){
+
+    @GetMapping("/message/{codiceIdentificativo}/{codiceFiscale}")
+    @ApiOperation("Ritorna il messaggio e relativo stato")
+    public ResponseEntity<MessageDTO> getMessage(@PathVariable String codiceIdentificativo,
+                                                 @PathVariable String codiceFiscale) {
+
+        if (codiceIdentificativo ==null || codiceFiscale == null ||codiceFiscale.isEmpty() ){
             return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
 
-        Optional<MessageDTO> messageDTO = messageService.getMessage(id,codiceFiscale);
+        Optional<MessageDTO> messageDTO = messageService.getMessage(codiceIdentificativo,codiceFiscale);
         if (messageDTO.isPresent())
             return new ResponseEntity<>(messageDTO.get(), HttpStatus.OK);
-
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
-
-
 
 
 

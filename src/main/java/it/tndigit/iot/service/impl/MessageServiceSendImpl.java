@@ -2,7 +2,6 @@ package it.tndigit.iot.service.impl;
 
 import it.tndigit.iot.common.UtilityCrypt;
 import it.tndigit.iot.common.UtilityIot;
-import it.tndigit.iot.costanti.TipoCryptoMessage;
 import it.tndigit.iot.domain.ServizioPO;
 import it.tndigit.iot.domain.message.MessagePO;
 import it.tndigit.iot.exception.IotException;
@@ -15,16 +14,15 @@ import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import it.tndigit.iot.service.mapper.ServizioMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.DigestUtils;
 
 import javax.persistence.EntityManager;
+import java.time.LocalDate;
 import java.util.Optional;
 
 
@@ -53,8 +51,6 @@ MessageServiceSendImpl implements MessageServiceSend {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private UtilityCrypt utilityCrypt;
 
     @Autowired
     EntityManager entityManager;
@@ -77,12 +73,17 @@ MessageServiceSendImpl implements MessageServiceSend {
 
     @Override
     @Transactional
-    public MessageDTO sendMessageInCode(MessageDTO messageDTO) throws IotException {
+    public MessageDTO sendMessageInCode(MessageDTO messageDTO) {
         Optional<ServizioDTO> servizioDTOOptional = getServizio();
         if (!servizioDTOOptional.isPresent()){
             throw  new IotException("Impossibile inviare il messaggio, Servizio NON presente");
         }
         messageDTO.setServizioDTO(servizioDTOOptional.get());
+
+        //Assegno il codice identificativo al mesasggio
+
+        String digestString = messageDTO.getTesto() + messageDTO.getOggetto() + messageDTO.getCodiceFiscale() + LocalDate.now().toString();
+        messageDTO.setCodiceIdentificativo(DigestUtils.md5DigestAsHex(digestString.getBytes()));
 
         //Save the new message on the database
         MessagePO messagePO = messageMapper.toEntity(messageDTO);
@@ -97,7 +98,7 @@ MessageServiceSendImpl implements MessageServiceSend {
 
     @Override
     @Transactional
-    public Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException {
+    public Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale)  {
 
 
         log.info("INIZIO elaborazione check per id " + idObj + ", "+ CODICEFISCALE+  codiceFiscale);
@@ -124,9 +125,9 @@ MessageServiceSendImpl implements MessageServiceSend {
 
 
     @Override
-    public Optional<MessageDTO> getMessage(Long idObj, String codiceFiscale) throws IotException {
+    public Optional<MessageDTO> getMessage(Long idObj, String codiceFiscale) {
 
-        Optional<MessagePO> messagePO = messageRepository.findByIdObjAndAndCodiceFiscale(idObj,codiceFiscale);
+       Optional<MessagePO> messagePO = messageRepository.findByIdObjAndAndCodiceFiscale(idObj,codiceFiscale);
 
         if (messagePO.isPresent()){
             MessageDTO messageDTO = messageMapper.toDto(messagePO.get());
@@ -136,5 +137,19 @@ MessageServiceSendImpl implements MessageServiceSend {
         return Optional.empty();
 
     }
+
+    @Override
+    public Optional<MessageDTO> getMessage(String codiceIdentificativo, String codiceFiscale) {
+        Optional<MessagePO> messagePO = messageRepository.findByCodiceIdentificativoAndCodiceFiscale(codiceIdentificativo,codiceFiscale);
+
+        if (messagePO.isPresent()){
+            MessageDTO messageDTO = messageMapper.toDto(messagePO.get());
+            return Optional.of(messageDTO);
+        }
+
+        return Optional.empty();
+
+    }
+
 }
 

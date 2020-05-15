@@ -24,7 +24,7 @@ public class ClientHttpServiceImpl implements ClientHttpService {
     }
 
 
-    public GestioneAuthApi getAuthRest() throws RestClientException {
+    public GestioneAuthApi getAuthRest()  {
         configureApiClientAuth(gestioneAuthApi.getApiClient());
         gestioneAuthApi.getApiClient().setBasePath(basePathAuth);
         return gestioneAuthApi;

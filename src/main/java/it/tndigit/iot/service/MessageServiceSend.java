@@ -20,6 +20,7 @@ public interface MessageServiceSend {
     Optional<MessageDTO> checkMessage(Long idObj, String codiceFiscale) throws IotException ;
     //void cryptoMessage(MessageDTO messageDTO) throws IotException;
     Optional<MessageDTO> getMessage(Long idObj, String codiceFiscale) throws IotException ;
+    Optional<MessageDTO> getMessage(String codiceIdentificativo, String codiceFiscale) throws IotException ;
 
 
 }

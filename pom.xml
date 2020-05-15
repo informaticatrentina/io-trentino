@@ -12,7 +12,7 @@
 
     <groupId>it.tndigit</groupId>
     <artifactId>io-trentino</artifactId>
-    <version>0.6.0</version>
+    <version>0.7.0</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -83,6 +83,7 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
+
         <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-config -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -142,10 +143,10 @@
         </dependency>
 
 <!--        &lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.metrics/spring-metrics &ndash;&gt;-->
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-actuator</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
 
         <!-- https://mvnrepository.com/artifact/io.prometheus/simpleclient_common -->
 <!--        <dependency>-->

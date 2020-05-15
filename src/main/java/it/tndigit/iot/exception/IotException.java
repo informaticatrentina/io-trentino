@@ -42,35 +42,6 @@ public class IotException extends RuntimeException {
         this.custom=custom;
         this.setMessage(message);
     }
-    public IotException(Exception e, String classe, String metodo, String custom) {
-        super(e);
-        this.classe =classe;
-        this.metodo=metodo;
-        this.custom=custom;
-        this.setMessage(e.getCause()!= null ? e.getCause().toString() : e.toString());
-    }
-
-    public IotException(String errorCode, String message, String classe, String metodo, String custom) {
-        super();
-        this.errorCode =errorCode;
-        this.classe =classe;
-        this.metodo=metodo;
-        this.custom=custom;
-        this.setMessage(message);
-
-    }
-
-
-
-
-    public void setScuException(String message,String classe, String metodo,String custom) {
-
-        this.classe =classe;
-        this.metodo=metodo;
-        this.custom=custom;
-        this.setMessage(message);
-//		spedisciMailErrore(this);
-    }
     public String getMessage() {
         return message;
     }
@@ -80,26 +51,17 @@ public class IotException extends RuntimeException {
     }
 
 
-
-    public String getCustom() {
-        return custom;
-    }
-    public void setCustom(String custom) {
-        this.custom = custom;
-    }
     @Override
     public String toString() {
-
-        return "SCU-ERRORE:"+
-                "Messaggio:" + message 	+"n" +
-                "Classe:" 	+ classe 	+"n" +
-                "Metodo:" 	+ metodo 	+"n" +
-                "Custom:" 	+ custom;
+        return "IotException{" +
+                "errorCode='" + errorCode + '\'' +
+                ", message='" + message + '\'' +
+                ", classe='" + classe + '\'' +
+                ", metodo='" + metodo + '\'' +
+                ", custom='" + custom + '\'' +
+                '}';
     }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
 
     public void setErrorCode(String errorCode) {
         this.errorCode = errorCode;

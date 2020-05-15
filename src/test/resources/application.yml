@@ -44,7 +44,11 @@ spring:
   h2:
     console:
       enabled: true
-
+  rabbitmq:
+    host: 172.26.7.70
+    port: 5672
+    username: guest
+    password: guest
 
 server:
   ioitalia:
@@ -70,3 +74,8 @@ application:
       exchange: ioapp.exchange
       queue: ioapp.queue
       routingkey: ioapp.routingkey
+
+management:
+  health:
+    db:
+      enabled: false

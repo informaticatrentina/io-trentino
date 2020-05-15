@@ -25,14 +25,13 @@ public class MessageRepositoryQueryTest {
     @DisplayName("Find Messaggi per Check")
     public void find() {
 
+        messageRepository.findAll();
         List<MessagePO> listaMessaggi = messageRepository.findMessageForCheck();
 
         Long conteggioMessaggi= listaMessaggi
                 .stream()
                 .filter(messagePO -> messagePO.getIdObj().equals(2L))
                 .count();
-
-
         assertTrue(conteggioMessaggi==0);
 
         conteggioMessaggi= listaMessaggi
@@ -40,7 +39,7 @@ public class MessageRepositoryQueryTest {
                 .count();
 
 
-        assertTrue(conteggioMessaggi.equals(15L));
+        assertTrue(conteggioMessaggi.equals(13L));
 
     }
 

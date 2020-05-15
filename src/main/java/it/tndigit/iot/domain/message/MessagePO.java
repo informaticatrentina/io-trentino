@@ -88,5 +88,8 @@ public class MessagePO extends DatePO {
     @JoinColumn(name = "IDPRESCRIPTION")
     private PrescriptionPO prescriptionPO;
 
+    @NotNull
+    @Column(name = "COD_IDENTIFICATIVO",unique = true)
+    private String codiceIdentificativo;
 
 }

@@ -58,5 +58,6 @@ public class MessageDTO extends CommonDTO implements Serializable {
 
     private String errorSend;
 
+    private String codiceIdentificativo;
 
 }

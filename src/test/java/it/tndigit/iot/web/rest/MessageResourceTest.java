@@ -24,7 +24,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -125,7 +128,8 @@ public class MessageResourceTest extends AbstractResourceTest{
         restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codiceIdentificativo").isNotEmpty());
 
         // Validate the Area in the database
         List<MessagePO> messagePOList = messageRepository.findAll();
@@ -138,6 +142,7 @@ public class MessageResourceTest extends AbstractResourceTest{
         assertThat(testMessage.getOggetto()).isEqualTo(messagePO.getOggetto());
         assertThat(testMessage.getTesto()).isEqualTo(messagePO.getTesto());
         assertThat(testMessage.getTipoCryptoMessage()).isEqualTo(messagePO.getTipoCryptoMessage());
+        assertThat(testMessage.getCodiceIdentificativo()).isNotEmpty();
     }
 
 
@@ -157,7 +162,8 @@ public class MessageResourceTest extends AbstractResourceTest{
         restMessageMockMvc.perform(post("/api/v1/message/{codiceFiscale}",messageDTO.getCodiceFiscale())
                 .contentType(TestUtil.APPLICATION_JSON_UTF8)
                 .content(TestUtil.convertObjectToJsonBytes(messageDTO)))
-                .andExpect(status().isCreated());
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.codiceIdentificativo").isNotEmpty());
 
         // Validate the Area in the database
         List<MessagePO> messagePOList = messageRepository.findAll();
@@ -289,7 +295,6 @@ public class MessageResourceTest extends AbstractResourceTest{
                 .andExpect(jsonPath("$.erroreImprevisto").isNotEmpty());
 
     }
-
 
 
 

@@ -1,17 +1,30 @@
 package it.tndigit.iot.service.impl.receive;
 
+import it.tndigit.ioitalia.client.invoker.ApiClient;
+import it.tndigit.ioitalia.service.dto.InlineResponse201;
+import it.tndigit.ioitalia.service.dto.LimitedProfile;
 import it.tndigit.ioitalia.service.dto.NewMessage;
+import it.tndigit.ioitalia.web.rest.DefaultApi;
+import it.tndigit.iot.costanti.TipoCryptoMessage;
 import it.tndigit.iot.domain.message.MessagePO;
+import it.tndigit.iot.domain.message.NotificationPO;
 import it.tndigit.iot.generate.MessageGenerate;
+import it.tndigit.iot.generate.NotificationGenerate;
+import it.tndigit.iot.generate.ServizioGenerate;
+import it.tndigit.iot.repository.MessageRepository;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,10 +42,28 @@ class MessageServiceIoItaliaImplTest {
     MessageGenerate messageGenerate;
 
     @Autowired
+    NotificationGenerate notificationGenerate;
+
+    @Autowired
+    ServizioGenerate servizioGenerate;
+
+    @Autowired
     MessageMapper messageMapper;
 
     @Autowired
     MessagePO messagePO;
+
+    @MockBean
+    DefaultApi defaultApi;
+
+    @MockBean
+    LimitedProfile limitedProfile;
+
+    @MockBean
+    InlineResponse201 inlineResponse201;
+
+    @MockBean
+    MessageRepository messageRepository;
 
 
     @Test
@@ -74,4 +105,78 @@ class MessageServiceIoItaliaImplTest {
 
     }
 
+    @Test
+    void receiveSendMessage() {
+
+        final String EXTERNA_ID="CodiceRitornoIOITALIA";
+
+        messagePO.setServizioPO(servizioGenerate.getObjectPO());
+        messagePO.setTipoCryptoMessage(TipoCryptoMessage.CRYPTO);
+        limitedProfile.setSenderAllowed(Boolean.TRUE);
+
+        Mockito.when(limitedProfile.isSenderAllowed()).thenReturn(Boolean.TRUE);
+        Mockito.when(defaultApi.getApiClient()).thenReturn(new ApiClient());
+        Mockito.when(defaultApi.getProfile(Mockito.anyString())).thenReturn(limitedProfile);
+        Mockito.when(defaultApi.submitMessageforUser(Mockito.anyString(), Mockito.any(NewMessage.class))).thenReturn(inlineResponse201);
+        Mockito.when(inlineResponse201.getId()).thenReturn(EXTERNA_ID);
+        Mockito.when(messageRepository.findById(Mockito.any())).thenReturn(Optional.of(messagePO));
+
+        MessageDTO messageDTO = messageMapper.toDto(messageGenerate.getObjectPOPrescription(messagePO));
+        messageServiceIoItalia.receiveSendMessage(messageDTO);
+
+        Assertions.assertEquals(EXTERNA_ID,messageDTO.getExternID());
+        Assertions.assertEquals(messageDTO.getErrorSend(),null);
+        Assertions.assertNotEquals(messageDTO.getOggetto(),messagePO.getOggetto());
+        Assertions.assertNotEquals(messageDTO.getTesto(),messagePO.getTesto());
+
+
+    }
+
+    @Test
+    void receiveSendMessageException() {
+
+        final String EXTERNA_ID="CodiceRitornoIOITALIA";
+
+
+        messagePO.setServizioPO(servizioGenerate.getObjectPO());
+
+        Mockito.when(limitedProfile.isSenderAllowed()).thenReturn(Boolean.FALSE);
+        Mockito.when(defaultApi.getApiClient()).thenReturn(new ApiClient());
+        Mockito.when(defaultApi.getProfile(Mockito.anyString())).thenReturn(limitedProfile);
+        Mockito.when(defaultApi.submitMessageforUser(Mockito.anyString(), Mockito.any(NewMessage.class))).thenReturn(inlineResponse201);
+        Mockito.when(inlineResponse201.getId()).thenReturn(EXTERNA_ID);
+        Mockito.when(messageRepository.findById(Mockito.any())).thenReturn(Optional.of(messagePO));
+        MessageDTO messageDTO = messageMapper.toDto(messageGenerate.getObjectPOPrescription(messagePO));
+        messageDTO.setExternID("");
+        messageServiceIoItalia.receiveSendMessage(messageDTO);
+        Assertions.assertEquals(messageDTO.getExternID(),"");
+        Assertions.assertEquals(messageDTO.getErrorSend(),"Impossibile mandare il messaggio, utente NON abilitato");
+
+//        Exception exception = assertThrows(NumberFormatException.class, () -> {
+//            messageServiceIoItalia.receiveSendMessage(messageDTO);
+//        });
+
+
+
+
+
+    }
+
+    @Test
+    void testConvertMessage() {
+        messagePO.setServizioPO(servizioGenerate.getObjectPO());
+
+        NotificationPO notificationPO = notificationGenerate.getObjectPO();
+        Set<NotificationPO> listaNot = new HashSet<>();
+        listaNot.add(notificationPO);
+        messagePO.setNotificationPOS(listaNot);
+
+        MessageDTO messageDTO = messageMapper.toDto(messagePO);
+        NewMessage newMessage = messageServiceIoItalia.convertMessage(messageDTO);
+
+        Assertions.assertEquals(newMessage.getContent().getSubject(), messageDTO.getOggetto());
+        Assertions.assertEquals(newMessage.getContent().getMarkdown(), messageDTO.getTesto());
+
+
+    }
 }

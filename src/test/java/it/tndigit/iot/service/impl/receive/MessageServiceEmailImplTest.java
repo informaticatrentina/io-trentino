@@ -8,9 +8,7 @@ import it.tndigit.iot.repository.NotificationRepository;
 import it.tndigit.iot.service.dto.message.MessageDTO;
 import it.tndigit.iot.service.mapper.MessageMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,8 +18,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import javax.persistence.EntityManager;
 import java.util.Optional;
+
+import static org.mockito.Mockito.*;
 
 @SpringBootTest()
 @DisplayName( "Conversione messaggi Email")
@@ -29,8 +31,10 @@ import java.util.Optional;
 @Slf4j
 class MessageServiceEmailImplTest {
 
-    @MockBean
+//    @MockBean
     JavaMailSender javaMailSender;
+
+    private MimeMessage mimeMessage;
 
      @Autowired
      MessageServiceEmailImpl messageServiceEmail;
@@ -49,6 +53,15 @@ class MessageServiceEmailImplTest {
 
     @Autowired
     protected EntityManager entityManager;
+
+    @BeforeEach
+    public void before(){
+
+        mimeMessage = new MimeMessage((Session) null);
+        javaMailSender = mock(JavaMailSender.class);
+        when(javaMailSender.createMimeMessage()).thenReturn(mimeMessage);
+
+    }
 
 
     @Test

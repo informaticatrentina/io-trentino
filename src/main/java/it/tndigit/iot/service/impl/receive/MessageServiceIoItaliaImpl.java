@@ -101,7 +101,16 @@ public class MessageServiceIoItaliaImpl extends MessageServiceAbstract implement
                 messagePO.setTesto(utilityCrypt.encrypt(messageDTO.getTesto()));
             }
             messagePO.setErrorSend(messageDTO.getErrorSend());
-            MessagePO messagePOSalvato = messageRepository.saveAndFlush(messagePO);
+            try{
+                messageRepository.saveAndFlush(messagePO);
+                entityManager.flush();
+                entityManager.detach(messagePO);
+            }catch (Exception ex){
+
+            }finally {
+                entityManager.close();
+            }
+
 
         }
     }

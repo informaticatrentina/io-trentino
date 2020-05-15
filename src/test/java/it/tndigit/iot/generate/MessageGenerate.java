@@ -33,6 +33,7 @@ public class MessageGenerate extends AbstractGenerate<MessagePO, MessageDTO> {
         po.setExternID(RandomStringUtils.randomAlphanumeric(10));
         po.setOggetto(RandomStringUtils.randomAlphanumeric(90));
         po.setTesto(RandomStringUtils.randomAlphanumeric(1000));
+        po.setCodiceIdentificativo(RandomStringUtils.randomAlphanumeric(100));
         po.setTimeToLive(3600);
 
         return po;
@@ -56,6 +57,7 @@ public class MessageGenerate extends AbstractGenerate<MessagePO, MessageDTO> {
     public MessagePO getObjectPOPrescription(MessagePO po) {
 
         po = this.getObjectPO(po);
+        po.setTipoCryptoMessage(TipoCryptoMessage.CRYPTO);
         po.setPrescriptionPO(applicationContext.getBean(PrescriptionPO.class));
         //deve trasferire un Euro
         po.getPrescriptionPO().setCodiceFiscaleDottore("TRTVVD80A01L378N");

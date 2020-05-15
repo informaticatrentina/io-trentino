@@ -2,11 +2,9 @@ package it.tndigit.iot.common;
 
 import it.tndigit.iot.web.utils.JwtUser;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 
-import java.util.Collection;
 import java.util.regex.Pattern;
 
 /**
